@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
 import { SlashMenu, ALL_COMMANDS, type SlashCommand } from "./SlashMenu";
+import { SelectionToolbar } from "./SelectionToolbar";
 
 interface HoveredBlockInfo {
   top: number;
@@ -53,6 +54,12 @@ export function Editor({ pageId, initialContent }: EditorProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [hoveredBlock, setHoveredBlock] = useState<HoveredBlockInfo | null>(null);
   const prevBlockEl = useRef<HTMLElement | null>(null);
+
+  /* ─── Selection toolbar state ─── */
+  const [selectionToolbar, setSelectionToolbar] = useState({
+    open: false,
+    position: { x: 0, y: 0 },
+  });
 
   /* ─── Slash menu state ─── */
   const [slashMenu, setSlashMenu] = useState({
@@ -151,6 +158,22 @@ export function Editor({ pageId, initialContent }: EditorProps) {
       const ctx = getSlashContext(editor);
       if (!ctx) {
         setSlashMenu((prev) => (prev.open ? { ...prev, open: false } : prev));
+      }
+
+      /* Selection toolbar */
+      if (!editor.state.selection.empty) {
+        const domSel = window.getSelection();
+        if (domSel && domSel.rangeCount > 0) {
+          const rect = domSel.getRangeAt(0).getBoundingClientRect();
+          if (rect.width > 0) {
+            setSelectionToolbar({
+              open: true,
+              position: { x: rect.left + rect.width / 2, y: rect.top },
+            });
+          }
+        }
+      } else {
+        setSelectionToolbar((prev) => (prev.open ? { ...prev, open: false } : prev));
       }
     },
     onBlur: () => {
@@ -317,6 +340,15 @@ export function Editor({ pageId, initialContent }: EditorProps) {
         activeIndex={slashMenu.activeIndex}
         onSelect={executeCommand}
       />
+
+      {/* ─── Selection formatting toolbar (portal-rendered to body) ─── */}
+      {editor && (
+        <SelectionToolbar
+          editor={editor}
+          open={selectionToolbar.open}
+          position={selectionToolbar.position}
+        />
+      )}
     </div>
   );
 }
