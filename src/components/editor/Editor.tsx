@@ -46,6 +46,41 @@ function getSlashContext(
   return { query, slashPos: nodeStart + lastSlash, from };
 }
 
+function findDropIndex(tiptapEl: HTMLElement, clientY: number): number {
+  const children = Array.from(tiptapEl.children) as HTMLElement[];
+  for (let i = 0; i < children.length; i++) {
+    const rect = children[i].getBoundingClientRect();
+    if (clientY <= rect.top + rect.height / 2) return i;
+  }
+  return children.length;
+}
+
+function getIndicatorY(tiptapEl: HTMLElement, wrapperEl: HTMLElement, dropIndex: number): number {
+  const children = Array.from(tiptapEl.children) as HTMLElement[];
+  const wrapperTop = wrapperEl.getBoundingClientRect().top;
+  if (children.length === 0) return 0;
+  if (dropIndex <= 0) return children[0].getBoundingClientRect().top - wrapperTop - 3;
+  if (dropIndex >= children.length) {
+    return children[children.length - 1].getBoundingClientRect().bottom - wrapperTop + 3;
+  }
+  const above = children[dropIndex - 1].getBoundingClientRect().bottom;
+  const below = children[dropIndex].getBoundingClientRect().top;
+  return (above + below) / 2 - wrapperTop;
+}
+
+function moveBlock(editor: TipTapEditor, fromIndex: number, toIndex: number) {
+  if (editor.isDestroyed) return;
+  const json = editor.getJSON();
+  if (!json.content || json.content.length <= 1) return;
+  const content = [...json.content];
+  const [removed] = content.splice(fromIndex, 1);
+  const adjustedTo = toIndex > fromIndex ? toIndex - 1 : toIndex;
+  if (adjustedTo === fromIndex) return;
+  content.splice(adjustedTo, 0, removed);
+  editor.commands.setContent({ ...json, content });
+  editor.commands.focus();
+}
+
 /* ─── Component ─── */
 
 export function Editor({ pageId, initialContent }: EditorProps) {
@@ -54,6 +89,9 @@ export function Editor({ pageId, initialContent }: EditorProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [hoveredBlock, setHoveredBlock] = useState<HoveredBlockInfo | null>(null);
   const prevBlockEl = useRef<HTMLElement | null>(null);
+
+  /* ─── Drag state ─── */
+  const dropIndicatorRef = useRef<HTMLDivElement>(null);
 
   /* ─── Selection toolbar state ─── */
   const [selectionToolbar, setSelectionToolbar] = useState({
@@ -247,6 +285,50 @@ export function Editor({ pageId, initialContent }: EditorProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
+  /* ─── Drag-to-reorder ─── */
+  const handleDragHandlePointerDown = useCallback(
+    (e: React.PointerEvent, blockEl: HTMLElement) => {
+      e.preventDefault();
+      if (!editor) return;
+      const wrapper = wrapperRef.current;
+      if (!wrapper) return;
+      const tiptapEl = wrapper.querySelector(".tiptap") as HTMLElement | null;
+      if (!tiptapEl) return;
+
+      const blocks = Array.from(tiptapEl.children) as HTMLElement[];
+      const fromIndex = blocks.indexOf(blockEl);
+      if (fromIndex === -1) return;
+
+      blockEl.classList.add("drag-source");
+      document.body.style.cursor = "grabbing";
+      let currentToIndex = fromIndex;
+
+      const showIndicator = (clientY: number) => {
+        const tEl = wrapperRef.current?.querySelector(".tiptap") as HTMLElement | null;
+        const wEl = wrapperRef.current;
+        const ind = dropIndicatorRef.current;
+        if (!tEl || !wEl || !ind) return;
+        currentToIndex = findDropIndex(tEl, clientY);
+        ind.style.setProperty("--drop-indicator-top", `${getIndicatorY(tEl, wEl, currentToIndex)}px`);
+        ind.style.opacity = "1";
+      };
+
+      const onMove = (ev: PointerEvent) => showIndicator(ev.clientY);
+
+      const onUp = () => {
+        blockEl.classList.remove("drag-source");
+        document.body.style.cursor = "";
+        if (dropIndicatorRef.current) dropIndicatorRef.current.style.opacity = "0";
+        moveBlock(editor, fromIndex, currentToIndex);
+        window.removeEventListener("pointermove", onMove);
+      };
+
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp, { once: true });
+    },
+    [editor]
+  );
+
   /* ─── Block hover tracking ─── */
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const wrapper = wrapperRef.current;
@@ -282,7 +364,10 @@ export function Editor({ pageId, initialContent }: EditorProps) {
 
   /* ─── Cleanup on unmount ─── */
   useEffect(() => {
-    return () => { editor?.destroy(); };
+    return () => {
+      editor?.destroy();
+      document.body.style.cursor = ""; // clear grabbing cursor if unmounted mid-drag
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -319,7 +404,7 @@ export function Editor({ pageId, initialContent }: EditorProps) {
             </button>
             <button
               type="button"
-              onMouseDown={(e) => e.preventDefault()}
+              onPointerDown={(e) => handleDragHandlePointerDown(e, hoveredBlock.el)}
               className="w-5 h-6 flex items-center justify-center rounded text-outline/35 hover:text-on-surface cursor-grab hover:bg-surface-container-high transition-all duration-100"
               title="Drag to reorder"
             >
@@ -328,6 +413,12 @@ export function Editor({ pageId, initialContent }: EditorProps) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ─── Drag drop indicator (position set imperatively via CSS custom property) ─── */}
+      <div
+        ref={dropIndicatorRef}
+        className="drop-indicator absolute left-0 right-0 h-0.5 bg-violet-500 rounded-full pointer-events-none z-30"
+      />
 
       {/* ─── TipTap editor ─── */}
       <EditorContent editor={editor} />

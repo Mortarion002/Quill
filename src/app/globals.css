@@ -81,6 +81,19 @@
 .sidebar-glow   { box-shadow: 0 0 24px rgba(139, 92, 246, 0.08); }
 .inspector-shadow { box-shadow: -10px 0 32px rgba(0, 0, 0, 0.5); }
 
+/* ─── Block drag & drop ─── */
+.drag-source {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.drop-indicator {
+  top: var(--drop-indicator-top, 0px);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  box-shadow: 0 0 6px rgba(139, 92, 246, 0.5);
+}
+
 /* ─── Selection toolbar ─── */
 .selection-toolbar {
   background: rgba(13, 12, 18, 0.94);
