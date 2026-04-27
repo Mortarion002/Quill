@@ -81,6 +81,14 @@
 .sidebar-glow   { box-shadow: 0 0 24px rgba(139, 92, 246, 0.08); }
 .inspector-shadow { box-shadow: -10px 0 32px rgba(0, 0, 0, 0.5); }
 
+/* ─── Slash command menu ─── */
+.slash-menu-panel {
+  background: rgba(13, 12, 18, 0.94);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
 /* ─── Base ─── */
 *,
 *::before,
