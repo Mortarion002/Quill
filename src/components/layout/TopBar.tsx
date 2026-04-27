@@ -12,9 +12,9 @@ export function TopBar() {
   return (
     <header
       className={cn(
-        "fixed top-0 h-14 border-b border-white/5 z-40 bg-slate-950/60 backdrop-blur-[24px] flex items-center justify-between px-6 transition-all duration-300",
-        "left-[260px]",
-        inspectorOpen ? "right-[320px]" : "right-0"
+        "fixed top-0 h-14 border-b border-white/5 z-40 bg-slate-950/60 backdrop-blur-xl flex items-center justify-between px-6 transition-all duration-300",
+        "left-65",
+        inspectorOpen ? "right-80" : "right-0"
       )}
     >
       {/* ─── Left: Title ─── */}
@@ -28,20 +28,20 @@ export function TopBar() {
       <div className="flex items-center gap-3 flex-shrink-0">
         {/* Text links */}
         <div className="flex items-center gap-4 pr-4 border-r border-white/5">
-          <button className="text-slate-400 hover:text-white transition-colors text-sm font-medium">
+          <button type="button" className="text-slate-400 hover:text-white transition-colors text-sm font-medium">
             Share
           </button>
-          <button className="text-slate-400 hover:text-white transition-colors text-sm font-medium">
+          <button type="button" className="text-slate-400 hover:text-white transition-colors text-sm font-medium">
             Publish
           </button>
         </div>
 
         {/* Icon buttons */}
         <div className="flex items-center gap-1">
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+          <button type="button" className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all">
             <span className="material-symbols-outlined text-[20px]">history</span>
           </button>
-          <button
+          <button type="button"
             onClick={toggleInspector}
             className={cn(
               "w-8 h-8 flex items-center justify-center rounded-lg transition-all",

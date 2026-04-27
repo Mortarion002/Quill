@@ -72,7 +72,14 @@
   --spacing-lg: 48px;
   --spacing-xl: 80px;
   --spacing-gutter: 32px;
+
+  /* ─── Extended Colors ─── */
+  --color-void: #0b0b0f;
 }
+
+/* ─── Named shadows (avoids inline styles) ─── */
+.sidebar-glow   { box-shadow: 0 0 24px rgba(139, 92, 246, 0.08); }
+.inspector-shadow { box-shadow: -10px 0 32px rgba(0, 0, 0, 0.5); }
 
 /* ─── Base ─── */
 *,
@@ -178,3 +185,160 @@ input[type="range"]::-webkit-slider-thumb {
 [contenteditable]:focus {
   outline: none;
 }
+
+/* ══════════════════════════════════════════
+   TipTap Editor Content
+══════════════════════════════════════════ */
+.tiptap {
+  min-height: 240px;
+  caret-color: #d0bcff;
+}
+
+.tiptap:focus {
+  outline: none;
+}
+
+/* Paragraphs */
+.tiptap p {
+  font-size: 18px;
+  line-height: 1.75;
+  letter-spacing: -0.01em;
+  color: #cbc3d7;
+  margin: 0;
+}
+.tiptap p + p {
+  margin-top: 2px;
+}
+
+/* Headings */
+.tiptap h1 {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: #e4e1e7;
+  margin: 40px 0 8px;
+}
+.tiptap h2 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #e4e1e7;
+  margin: 32px 0 6px;
+}
+.tiptap h3 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: #e4e1e7;
+  margin: 24px 0 4px;
+}
+
+/* Inline */
+.tiptap strong { font-weight: 600; color: #e4e1e7; }
+.tiptap em     { font-style: italic; }
+
+/* Code */
+.tiptap code {
+  background: #2a292e;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.875em;
+  color: #d0bcff;
+}
+.tiptap pre {
+  background: #0e0e12;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+.tiptap pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  color: #e4e1e7;
+}
+
+/* Blockquote */
+.tiptap blockquote {
+  border-left: 2px solid #a078ff;
+  padding-left: 20px;
+  margin: 20px 0;
+  color: #958ea0;
+  font-style: italic;
+}
+
+/* Lists */
+.tiptap ul,
+.tiptap ol {
+  padding-left: 28px;
+  margin: 6px 0;
+  color: #cbc3d7;
+}
+.tiptap li {
+  line-height: 1.75;
+  margin-bottom: 2px;
+}
+.tiptap ul li::marker { color: #494454; }
+.tiptap ol li::marker { color: #494454; }
+
+/* Horizontal rule */
+.tiptap hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 32px 0;
+}
+
+/* ─── TipTap Placeholder ─── */
+.tiptap p.is-editor-empty:first-child::before,
+.tiptap p.is-empty::before,
+.tiptap h1.is-empty::before,
+.tiptap h2.is-empty::before,
+.tiptap h3.is-empty::before {
+  content: attr(data-placeholder);
+  color: #494454;
+  float: left;
+  height: 0;
+  pointer-events: none;
+  font-style: normal;
+}
+
+/* ─── Block hover highlight (applied via JS) ─── */
+.tiptap-block-hovered {
+  position: relative;
+}
+.tiptap-block-hovered::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
+  background: rgba(160, 120, 255, 0.04);
+  border-left: 1.5px solid rgba(160, 120, 255, 0.45);
+  border-radius: 0 4px 4px 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Active block (cursor inside) ─── */
+.tiptap-block-active {
+  position: relative;
+}
+.tiptap-block-active::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
+  background: rgba(160, 120, 255, 0.06);
+  border-left: 2px solid rgba(160, 120, 255, 0.7);
+  border-radius: 0 4px 4px 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure text stays above the ::before overlay */
+.tiptap > * { position: relative; z-index: 1; }

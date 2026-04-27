@@ -29,8 +29,7 @@ export function Inspector() {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 320, opacity: 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 280 }}
-          className="fixed right-0 top-0 w-[320px] h-screen border-l border-white/5 bg-slate-950/60 backdrop-blur-[24px] z-40 flex flex-col"
-          style={{ boxShadow: "-10px 0 32px rgba(0,0,0,0.5)" }}
+          className="fixed right-0 top-0 w-80 h-screen border-l border-white/5 bg-slate-950/60 backdrop-blur-xl z-40 flex flex-col inspector-shadow"
         >
           {/* ─── Header ─── */}
           <div className="px-6 pt-20 pb-5 border-b border-white/5 flex items-start justify-between">
@@ -40,7 +39,7 @@ export function Inspector() {
               </h3>
               <p className="text-slate-500 text-xs">Block Properties</p>
             </div>
-            <button
+            <button type="button"
               onClick={() => setInspectorOpen(false)}
               className="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-slate-400 transition-colors mt-0.5"
             >
@@ -51,7 +50,7 @@ export function Inspector() {
           {/* ─── Tabs ─── */}
           <div className="flex px-6 pt-1 gap-5 border-b border-white/5">
             {TABS.map((tab) => (
-              <button
+              <button type="button"
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={cn(
@@ -139,7 +138,7 @@ export function Inspector() {
                       </span>
                       Drop Shadow
                     </span>
-                    <button
+                    <button type="button"
                       onClick={() => setShadowOn((v) => !v)}
                       className={cn(
                         "w-9 h-5 rounded-full relative transition-colors duration-200",
@@ -164,7 +163,7 @@ export function Inspector() {
                     <p className="text-[10px] uppercase tracking-widest text-slate-600 font-semibold">
                       Border
                     </p>
-                    <button className="text-slate-600 hover:text-slate-400 transition-colors">
+                    <button type="button" className="text-slate-600 hover:text-slate-400 transition-colors">
                       <span className="material-symbols-outlined text-[16px]">add</span>
                     </button>
                   </div>
@@ -192,7 +191,7 @@ export function Inspector() {
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     {["Body", "Heading"].map((t, i) => (
-                      <button
+                      <button type="button"
                         key={t}
                         className={cn(
                           "py-2 rounded-lg text-xs font-medium border transition-colors",
@@ -208,7 +207,7 @@ export function Inspector() {
                   <div className="flex gap-1.5 bg-surface-container-high rounded-lg p-1 border border-white/5">
                     {["format_align_left", "format_align_center", "format_align_right"].map(
                       (icon, i) => (
-                        <button
+                        <button type="button"
                           key={icon}
                           className={cn(
                             "flex-1 py-1.5 rounded-md flex items-center justify-center transition-colors",

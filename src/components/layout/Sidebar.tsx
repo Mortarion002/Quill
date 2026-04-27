@@ -33,8 +33,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-0 w-[260px] h-screen border-r border-white/5 bg-slate-950/60 backdrop-blur-[24px] flex flex-col p-4 gap-1.5 z-50 overflow-hidden"
-      style={{ boxShadow: "0 0 24px rgba(139,92,246,0.08)" }}
+      className="fixed left-0 top-0 w-65 h-screen border-r border-white/5 bg-slate-950/60 backdrop-blur-xl flex flex-col p-4 gap-1.5 z-50 overflow-hidden sidebar-glow"
     >
       {/* ─── Workspace Header ─── */}
       <div className="flex items-center gap-3 p-2 mb-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
@@ -59,7 +58,7 @@ export function Sidebar() {
       </div>
 
       {/* ─── New Page CTA ─── */}
-      <button
+      <button type="button"
         onClick={handleNewPage}
         className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-violet-600 hover:bg-violet-500 active:scale-[0.98] text-white text-sm font-semibold transition-all duration-200 mb-2"
         style={{ boxShadow: "0 2px 12px rgba(139,92,246,0.25)" }}
@@ -76,7 +75,7 @@ export function Sidebar() {
 
           return (
             <div key={item.label}>
-              <button
+              <button type="button"
                 onClick={() => {
                   setActiveNav(item.label);
                   if (isPages) setPagesExpanded((p) => !p);
@@ -159,7 +158,7 @@ export function Sidebar() {
                                 {page.title || "Untitled"}
                               </span>
                               {hoveredPageId === page.id && (
-                                <button
+                                <button type="button"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     deletePage(page.id);
@@ -187,7 +186,7 @@ export function Sidebar() {
       {/* ─── Footer Navigation ─── */}
       <div className="pt-3 border-t border-white/5 flex flex-col gap-0.5">
         {FOOTER_ITEMS.map((item) => (
-          <button
+          <button type="button"
             key={item.label}
             className="flex items-center gap-3 px-3 py-[9px] rounded-lg text-slate-500 hover:bg-white/5 hover:text-slate-300 transition-all text-sm"
           >
