@@ -14,6 +14,10 @@ interface SettingsStore {
   setSpellCheck: (v: boolean) => void;
 }
 
+function clampLineSpacing(value: number) {
+  return Math.min(2.25, Math.max(1.25, value));
+}
+
 export const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
@@ -21,7 +25,7 @@ export const useSettingsStore = create<SettingsStore>()(
       lineSpacing: 1.75,
       spellCheck: true,
       setFont: (font) => set({ font }),
-      setLineSpacing: (lineSpacing) => set({ lineSpacing }),
+      setLineSpacing: (lineSpacing) => set({ lineSpacing: clampLineSpacing(lineSpacing) }),
       setSpellCheck: (spellCheck) => set({ spellCheck }),
     }),
     { name: "quill-settings" }

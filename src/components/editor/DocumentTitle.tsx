@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
+import { useSettingsStore } from "@/store/useSettingsStore";
 import { Icon } from "@/components/ui/Icon";
 import { EmojiPicker } from "./EmojiPicker";
 
@@ -14,6 +15,7 @@ interface DocumentTitleProps {
 
 export function DocumentTitle({ pageId, title, emoji }: DocumentTitleProps) {
   const { updatePage } = useDocumentStore();
+  const { spellCheck } = useSettingsStore();
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [emojiOpen, setEmojiOpen] = useState(false);
 
@@ -73,9 +75,10 @@ export function DocumentTitle({ pageId, title, emoji }: DocumentTitleProps) {
       <h1
         ref={titleRef}
         contentEditable
+        spellCheck={spellCheck}
         suppressContentEditableWarning
         data-placeholder="Untitled Document"
-        className="text-[56px] font-bold leading-[1.1] tracking-normal text-slate-950 outline-none w-full wrap-break-word cursor-text caret-violet-500"
+        className="w-full wrap-break-word cursor-text text-[56px] font-bold leading-[1.1] tracking-normal text-slate-950 outline-none caret-violet-500 [font-family:var(--editor-font)]"
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
       >

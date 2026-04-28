@@ -350,6 +350,7 @@ input[type="range"]::-webkit-slider-thumb {
   margin: 20px 0;
   color: #64748b;
   font-style: italic;
+  line-height: var(--editor-line-height);
 }
 
 /* Lists */
@@ -360,7 +361,7 @@ input[type="range"]::-webkit-slider-thumb {
   color: #334155;
 }
 .tiptap li {
-  line-height: 1.75;
+  line-height: var(--editor-line-height);
   margin-bottom: 2px;
 }
 .tiptap ul li::marker { color: #94a3b8; }

@@ -232,6 +232,8 @@ function SettingsView() {
     { value: "serif", label: "Georgia", preview: "Long-form serif" },
     { value: "mono", label: "System mono", preview: "Code and notes" },
   ];
+  const previewFontClass = `font-preview-${font}`;
+  const formattedLineSpacing = lineSpacing.toFixed(2).replace(/\.00$/, "");
 
   return (
     <div className="grid grid-cols-[1fr_340px] gap-6">
@@ -265,34 +267,53 @@ function SettingsView() {
 
       <aside className="space-y-4">
         <section className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Preview</p>
+          <div className={cn("rounded-2xl bg-slate-50 p-4 text-slate-950", previewFontClass)}>
+            <p className="text-[18px] font-bold">A calmer page starts here.</p>
+            <p className="mt-2 text-[14px] text-slate-500" style={{ lineHeight: lineSpacing }}>
+              Font and spacing changes now apply to the editor canvas, page title, lists, and quote blocks.
+            </p>
+          </div>
+        </section>
+        <section className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <span className="text-[13px] font-semibold text-slate-950">Line spacing</span>
-            <span className="text-[12px] font-semibold text-violet-600">{lineSpacing}x</span>
+            <span className="text-[12px] font-semibold text-violet-600">{formattedLineSpacing}x</span>
           </div>
           <input
             type="range"
-            min={1.5}
-            max={2}
-            step={0.25}
+            min={1.25}
+            max={2.25}
+            step={0.05}
             value={lineSpacing}
             onChange={(event) => setLineSpacing(Number(event.target.value))}
             className="w-full"
+            aria-label="Editor line spacing"
           />
         </section>
-        <section className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-          <label className="flex cursor-pointer items-center justify-between gap-4">
-            <span>
-              <span className="block text-[13px] font-semibold text-slate-950">Spell check</span>
-              <span className="mt-1 block text-[12px] text-slate-400">{spellCheck ? "Enabled" : "Disabled"}</span>
-            </span>
-            <input
-              type="checkbox"
-              checked={spellCheck}
-              onChange={() => setSpellCheck(!spellCheck)}
-              className="h-5 w-5 accent-violet-600"
+        <button
+          type="button"
+          onClick={() => setSpellCheck(!spellCheck)}
+          className="flex w-full items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-white p-5 text-left shadow-sm transition-all hover:border-violet-100"
+        >
+          <span>
+            <span className="block text-[13px] font-semibold text-slate-950">Spell check</span>
+            <span className="mt-1 block text-[12px] text-slate-400">{spellCheck ? "Enabled" : "Disabled"}</span>
+          </span>
+          <span
+            className={cn(
+              "relative h-7 w-12 rounded-full transition-colors",
+              spellCheck ? "bg-violet-600" : "bg-slate-200"
+            )}
+          >
+            <span
+              className={cn(
+                "absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-all",
+                spellCheck ? "right-1" : "left-1"
+              )}
             />
-          </label>
-        </section>
+          </span>
+        </button>
       </aside>
     </div>
   );
