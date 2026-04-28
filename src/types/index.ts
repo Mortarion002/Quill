@@ -3,6 +3,7 @@ export interface Page {
   title: string;
   content: string;
   emoji?: string;
+  favorite?: boolean;
   createdAt: number;
   updatedAt: number;
 }

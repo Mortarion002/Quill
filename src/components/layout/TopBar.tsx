@@ -5,9 +5,9 @@ import { useUIStore } from "@/store/useUIStore";
 import { cn } from "@/lib/utils";
 
 export function TopBar() {
-  const { getActivePage } = useDocumentStore();
+  const { getActivePage, hasHydrated } = useDocumentStore();
   const { inspectorOpen, toggleInspector } = useUIStore();
-  const activePage = getActivePage();
+  const activePage = hasHydrated ? getActivePage() : undefined;
 
   return (
     <header

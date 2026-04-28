@@ -15,6 +15,7 @@ interface DocumentStore {
   deletePage: (id: string) => void;
   setActivePage: (id: string) => void;
   getActivePage: () => Page | undefined;
+  toggleFavorite: (id: string) => void;
 }
 
 export const useDocumentStore = create<DocumentStore>()(
@@ -62,6 +63,14 @@ export const useDocumentStore = create<DocumentStore>()(
       },
 
       setActivePage: (id) => set({ activePageId: id }),
+
+      toggleFavorite: (id) => {
+        set((state) => ({
+          pages: state.pages.map((p) =>
+            p.id === id ? { ...p, favorite: !p.favorite, updatedAt: Date.now() } : p
+          ),
+        }));
+      },
 
       getActivePage: () => {
         const { pages, activePageId } = get();
