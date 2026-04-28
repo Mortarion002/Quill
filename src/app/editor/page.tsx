@@ -9,6 +9,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { Inspector } from "@/components/layout/Inspector";
 import { WorkspacePanel } from "@/components/layout/WorkspacePanel";
+import { CloudDocumentSync } from "@/components/sync/CloudDocumentSync";
 import { EmptyState } from "@/components/editor/EmptyState";
 import { DocumentTitle } from "@/components/editor/DocumentTitle";
 import { Editor } from "@/components/editor/Editor";
@@ -109,6 +110,7 @@ export default function EditorPage() {
   return (
     <div className="app-frame min-h-screen bg-[radial-gradient(circle_at_8%_8%,rgba(139,92,246,0.12),transparent_28%),radial-gradient(circle_at_92%_92%,rgba(251,207,232,0.45),transparent_32%),#ececf4]">
       <SettingsApplier />
+      <CloudDocumentSync />
       <Sidebar />
       <TopBar />
       <Inspector />

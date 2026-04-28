@@ -5,11 +5,27 @@ import { persist } from "zustand/middleware";
 import type { Page } from "@/types";
 import { generateId } from "@/lib/utils";
 
+export type CloudSyncStatus =
+  | "local"
+  | "loading"
+  | "syncing"
+  | "synced"
+  | "error"
+  | "setup";
+
 interface DocumentStore {
   pages: Page[];
   activePageId: string | null;
   hasHydrated: boolean;
+  cloudStatus: CloudSyncStatus;
+  cloudMessage: string | null;
+  lastSyncedAt: number | null;
+  pendingCloudDeleteIds: string[];
   setHasHydrated: (v: boolean) => void;
+  setCloudStatus: (status: CloudSyncStatus, message?: string | null) => void;
+  setCloudSynced: () => void;
+  replacePages: (pages: Page[], activePageId?: string | null) => void;
+  clearPendingCloudDeleteIds: (ids: string[]) => void;
   createPage: (title?: string) => string;
   updatePage: (id: string, updates: Partial<Omit<Page, "id" | "createdAt">>) => void;
   deletePage: (id: string) => void;
@@ -26,8 +42,36 @@ export const useDocumentStore = create<DocumentStore>()(
       pages: [],
       activePageId: null,
       hasHydrated: false,
+      cloudStatus: "local",
+      cloudMessage: null,
+      lastSyncedAt: null,
+      pendingCloudDeleteIds: [],
 
       setHasHydrated: (v) => set({ hasHydrated: v }),
+
+      setCloudStatus: (cloudStatus, cloudMessage = null) =>
+        set({ cloudStatus, cloudMessage }),
+
+      setCloudSynced: () =>
+        set({ cloudStatus: "synced", cloudMessage: null, lastSyncedAt: Date.now() }),
+
+      replacePages: (pages, nextActivePageId) =>
+        set((state) => {
+          const livePages = pages.filter((page) => !page.deletedAt);
+          const activePageId =
+            nextActivePageId === undefined
+              ? state.activePageId && pages.some((page) => page.id === state.activePageId)
+                ? state.activePageId
+                : livePages[0]?.id ?? null
+              : nextActivePageId;
+
+          return { pages, activePageId };
+        }),
+
+      clearPendingCloudDeleteIds: (ids) =>
+        set((state) => ({
+          pendingCloudDeleteIds: state.pendingCloudDeleteIds.filter((id) => !ids.includes(id)),
+        })),
 
       createPage: (title = "Untitled") => {
         const id = generateId();
@@ -80,6 +124,9 @@ export const useDocumentStore = create<DocumentStore>()(
       permanentlyDeletePage: (id) => {
         set((state) => ({
           pages: state.pages.filter((p) => p.id !== id),
+          pendingCloudDeleteIds: state.pendingCloudDeleteIds.includes(id)
+            ? state.pendingCloudDeleteIds
+            : [...state.pendingCloudDeleteIds, id],
         }));
       },
 
