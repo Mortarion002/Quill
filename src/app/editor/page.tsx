@@ -22,11 +22,30 @@ const FONT_MAP = {
 
 /* Applies font + line-height settings to CSS custom properties on :root */
 function SettingsApplier() {
-  const { font, lineSpacing } = useSettingsStore();
+  const { font, lineSpacing, theme } = useSettingsStore();
+
   useEffect(() => {
     document.documentElement.style.setProperty("--editor-font", FONT_MAP[font]);
     document.documentElement.style.setProperty("--editor-line-height", String(lineSpacing));
   }, [font, lineSpacing]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const applyTheme = () => {
+      const resolvedTheme = theme === "system" ? (media.matches ? "dark" : "light") : theme;
+      document.documentElement.dataset.theme = resolvedTheme;
+      document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
+    };
+
+    applyTheme();
+
+    if (theme !== "system") return;
+
+    media.addEventListener("change", applyTheme);
+    return () => media.removeEventListener("change", applyTheme);
+  }, [theme]);
+
   return null;
 }
 
@@ -103,7 +122,7 @@ export default function EditorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_8%_8%,rgba(139,92,246,0.12),transparent_28%),radial-gradient(circle_at_92%_92%,rgba(251,207,232,0.45),transparent_32%),#ececf4]">
+    <div className="app-frame min-h-screen bg-[radial-gradient(circle_at_8%_8%,rgba(139,92,246,0.12),transparent_28%),radial-gradient(circle_at_92%_92%,rgba(251,207,232,0.45),transparent_32%),#ececf4]">
       <SettingsApplier />
       <Sidebar />
       <TopBar />
@@ -111,7 +130,7 @@ export default function EditorPage() {
 
       <main
         className={cn(
-          "ml-[292px] mr-5 mt-5 min-h-[calc(100vh-40px)] rounded-r-[24px] border border-l-0 border-white/80 bg-white/92 pt-16 shadow-[0_24px_70px_rgba(79,70,120,0.14)] transition-all duration-300 ease-in-out",
+          "main-shell ml-68 min-h-screen border-l-0 border-white/80 bg-white/92 pt-16 shadow-[0_24px_70px_rgba(79,70,120,0.14)] transition-all duration-300 ease-in-out",
           inspectorOpen && "mr-[340px]"
         )}
       >

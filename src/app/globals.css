@@ -162,6 +162,17 @@ body {
   min-height: 100vh;
 }
 
+:root[data-theme="dark"] body {
+  background-color: #0b0b0f;
+  color: #e4e1e7;
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] .app-frame {
+  background: radial-gradient(circle at 8% 8%, rgba(139, 92, 246, 0.18), transparent 28%),
+    #0b0b0f;
+}
+
 ::selection {
   background-color: rgba(160, 120, 255, 0.28);
   color: inherit;

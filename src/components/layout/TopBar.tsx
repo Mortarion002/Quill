@@ -27,8 +27,8 @@ export function TopBar() {
   return (
     <header
       className={cn(
-        "fixed top-5 z-40 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/88 px-7 backdrop-blur-2xl transition-all duration-300",
-        "left-[292px] right-5 rounded-tr-[24px]",
+        "topbar-shell fixed top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/88 px-7 backdrop-blur-2xl transition-all duration-300",
+        "left-68 right-0",
         inspectorOpen && "right-[340px]"
       )}
     >

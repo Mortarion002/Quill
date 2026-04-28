@@ -1,6 +1,8 @@
 "use client";
 
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { useDocumentStore } from "@/store/useDocumentStore";
+import { useSettingsStore, type ThemeOption } from "@/store/useSettingsStore";
 import { useUIStore, type WorkspaceView } from "@/store/useUIStore";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
@@ -26,6 +28,12 @@ const FOOTER_ITEMS: {
 }[] = [
   { icon: "help", label: "Help", view: "help" },
   { icon: "trash", label: "Trash", view: "trash", count: "trash" },
+];
+
+const THEME_OPTIONS: { value: ThemeOption; label: string }[] = [
+  { value: "dark", label: "Dark" },
+  { value: "light", label: "Light" },
+  { value: "system", label: "System" },
 ];
 
 function NavButton({
@@ -66,6 +74,7 @@ function NavButton({
 
 export function Sidebar() {
   const { pages, createPage } = useDocumentStore();
+  const { theme, setTheme } = useSettingsStore();
   const { setWorkspaceView } = useUIStore();
   const liveCount = pages.filter((page) => !page.deletedAt).length;
   const trashCount = pages.filter((page) => page.deletedAt).length;
@@ -82,7 +91,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="fixed bottom-5 left-5 top-5 z-50 flex w-68 flex-col rounded-l-[24px] border border-white/70 bg-[#f5f6fb]/85 shadow-[0_24px_70px_rgba(79,70,120,0.16)] backdrop-blur-2xl">
+    <aside className="sidebar-shell fixed inset-y-0 left-0 z-50 flex w-68 flex-col border-r border-white/70 bg-[#f5f6fb]/88 shadow-[0_24px_70px_rgba(79,70,120,0.16)] backdrop-blur-2xl">
       <div className="px-5 pt-5 pb-3">
         <button
           type="button"
@@ -128,18 +137,50 @@ export function Sidebar() {
           ))}
         </nav>
         <div className="mt-3 grid grid-cols-3 rounded-xl bg-slate-100 p-1 text-[12px] font-medium text-slate-400">
-          <span className="rounded-lg px-2 py-1.5 text-center">Dark</span>
-          <span className="rounded-lg bg-white px-2 py-1.5 text-center text-slate-950 shadow-sm">Light</span>
-          <span className="rounded-lg px-2 py-1.5 text-center">System</span>
+          {THEME_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setTheme(option.value)}
+              className={cn(
+                "rounded-lg px-2 py-1.5 text-center transition-all",
+                theme === option.value
+                  ? "bg-white text-slate-950 shadow-sm"
+                  : "hover:text-slate-600"
+              )}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
         <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100 text-violet-600">
-            <Icon name="user" className="h-4 w-4" />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-[12px] font-semibold text-slate-900">Workspace User</p>
-            <p className="truncate text-[11px] text-slate-400">local@quill.app</p>
-          </div>
+          <Show when="signed-out">
+            <div className="grid w-full grid-cols-2 gap-2">
+              <SignInButton mode="modal">
+                <button
+                  type="button"
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition-colors hover:text-slate-950"
+                >
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button
+                  type="button"
+                  className="rounded-xl bg-violet-600 px-3 py-2 text-[12px] font-semibold text-white shadow-sm transition-colors hover:bg-violet-500"
+                >
+                  Sign up
+                </button>
+              </SignUpButton>
+            </div>
+          </Show>
+          <Show when="signed-in">
+            <UserButton />
+            <div className="min-w-0">
+              <p className="truncate text-[12px] font-semibold text-slate-900">Workspace User</p>
+              <p className="truncate text-[11px] text-slate-400">Signed in</p>
+            </div>
+          </Show>
         </div>
       </div>
     </aside>
