@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import type { User } from "@supabase/supabase-js";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -264,13 +265,14 @@ export function SupabaseAuthControl({ surface }: { surface: Surface }) {
         </div>
       )}
 
-      {authOpen && (
+      {authOpen && typeof document !== "undefined" && createPortal(
         <AuthDialog
           mode={mode}
           onModeChange={setMode}
           onClose={() => setAuthOpen(false)}
           onSuccess={setUser}
-        />
+        />,
+        document.body
       )}
     </>
   );
