@@ -4,13 +4,31 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
+import { useSettingsStore } from "@/store/useSettingsStore";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { Inspector } from "@/components/layout/Inspector";
+import { WorkspacePanel } from "@/components/layout/WorkspacePanel";
 import { EmptyState } from "@/components/editor/EmptyState";
 import { DocumentTitle } from "@/components/editor/DocumentTitle";
 import { Editor } from "@/components/editor/Editor";
 import { cn } from "@/lib/utils";
+
+const FONT_MAP = {
+  inter: '"Inter", ui-sans-serif, system-ui, sans-serif',
+  serif: 'Georgia, "Times New Roman", ui-serif, serif',
+  mono: 'ui-monospace, "Cascadia Code", monospace',
+} as const;
+
+/* Applies font + line-height settings to CSS custom properties on :root */
+function SettingsApplier() {
+  const { font, lineSpacing } = useSettingsStore();
+  useEffect(() => {
+    document.documentElement.style.setProperty("--editor-font", FONT_MAP[font]);
+    document.documentElement.style.setProperty("--editor-line-height", String(lineSpacing));
+  }, [font, lineSpacing]);
+  return null;
+}
 
 /* ─── Skeleton shown before hydration ─── */
 function EditorSkeleton() {
@@ -65,21 +83,17 @@ function DocumentCanvas({
 /* ─── Main page ─── */
 export default function EditorPage() {
   const { pages, activePageId, createPage, hasHydrated } = useDocumentStore();
-  const { inspectorOpen } = useUIStore();
-  const [mounted, setMounted] = useState(false);
+  const { inspectorOpen, workspaceView } = useUIStore();
   const [activatedPages, setActivatedPages] = useState<Set<string>>(new Set());
+  const livePageCount = pages.reduce((count, page) => count + (page.deletedAt ? 0 : 1), 0);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (hasHydrated && pages.length === 0) {
+    if (hasHydrated && livePageCount === 0) {
       createPage("Untitled");
     }
-  }, [hasHydrated, pages.length, createPage]);
+  }, [hasHydrated, livePageCount, createPage]);
 
-  const activePage = pages.find((p) => p.id === activePageId);
+  const activePage = pages.find((p) => p.id === activePageId && !p.deletedAt);
   const isEditorActive =
     !!activePage?.content || activatedPages.has(activePageId ?? "");
 
@@ -90,6 +104,7 @@ export default function EditorPage() {
 
   return (
     <div className="min-h-screen bg-void">
+      <SettingsApplier />
       <Sidebar />
       <TopBar />
       <Inspector />
@@ -101,7 +116,9 @@ export default function EditorPage() {
         )}
       >
         <AnimatePresence mode="wait">
-          {!mounted || !hasHydrated || !activePage ? (
+          {workspaceView !== "editor" ? (
+            <WorkspacePanel key={workspaceView} />
+          ) : !hasHydrated || !activePage ? (
             <motion.div
               key="skeleton"
               initial={{ opacity: 0 }}

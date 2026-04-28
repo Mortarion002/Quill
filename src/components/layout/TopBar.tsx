@@ -1,18 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
 import { cn } from "@/lib/utils";
 
+const VIEW_TITLES: Record<string, string> = {
+  search: "Search",
+  pages: "Pages",
+  favorites: "Favorites",
+  templates: "Templates",
+  settings: "Settings",
+  help: "Help",
+  trash: "Trash",
+};
+
 export function TopBar() {
   const { getActivePage, hasHydrated } = useDocumentStore();
-  const { inspectorOpen, toggleInspector } = useUIStore();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
-  // Both guards needed: mounted prevents SSR/hydration mismatch,
-  // hasHydrated ensures Zustand localStorage has been read
-  const activePage = mounted && hasHydrated ? getActivePage() : undefined;
+  const { inspectorOpen, toggleInspector, workspaceView } = useUIStore();
+  const activePage = hasHydrated ? getActivePage() : undefined;
+  const title =
+    workspaceView === "editor"
+      ? activePage?.title || "Untitled Document"
+      : VIEW_TITLES[workspaceView] || "Workspace";
 
   return (
     <header
@@ -25,7 +34,7 @@ export function TopBar() {
       {/* ─── Left: Title ─── */}
       <div className="flex items-center gap-3 min-w-0">
         <span className="text-[15px] font-semibold text-slate-200 truncate">
-          {activePage?.title || "Untitled Document"}
+          {title}
         </span>
       </div>
 

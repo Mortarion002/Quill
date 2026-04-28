@@ -4,6 +4,7 @@ export interface Page {
   content: string;
   emoji?: string;
   favorite?: boolean;
+  deletedAt?: number;
   createdAt: number;
   updatedAt: number;
 }
