@@ -1,8 +1,8 @@
 "use client";
 
-import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
+import { SupabaseAuthControl } from "@/components/auth/SupabaseAuthControl";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
@@ -54,21 +54,7 @@ export function TopBar() {
           <Icon name="settings" className="h-4 w-4" />
           Inspector
         </button>
-        <Show when="signed-out">
-          <SignInButton mode="modal">
-            <button
-              type="button"
-              className="h-9 rounded-full border border-slate-200 bg-white px-3.5 text-[13px] font-semibold text-slate-700 shadow-sm transition-colors hover:text-slate-950"
-            >
-              Sign in
-            </button>
-          </SignInButton>
-        </Show>
-        <Show when="signed-in">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm">
-            <UserButton />
-          </div>
-        </Show>
+        <SupabaseAuthControl surface="topbar" />
       </div>
     </header>
   );

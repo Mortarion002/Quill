@@ -1,8 +1,8 @@
 "use client";
 
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore, type WorkspaceView } from "@/store/useUIStore";
+import { SupabaseAuthControl } from "@/components/auth/SupabaseAuthControl";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
@@ -148,34 +148,8 @@ export function Sidebar() {
             <NavButton key={item.view} {...item} count={resolveCount(item.count)} />
           ))}
         </nav>
-        <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
-          <Show when="signed-out">
-            <div className="grid w-full grid-cols-2 gap-2">
-              <SignInButton mode="modal">
-                <button
-                  type="button"
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition-colors hover:text-slate-950"
-                >
-                  Sign in
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button
-                  type="button"
-                  className="rounded-xl bg-violet-600 px-3 py-2 text-[12px] font-semibold text-white shadow-sm transition-colors hover:bg-violet-500"
-                >
-                  Sign up
-                </button>
-              </SignUpButton>
-            </div>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-            <div className="min-w-0">
-              <p className="truncate text-[12px] font-semibold text-slate-900">Workspace User</p>
-              <p className="truncate text-[11px] text-slate-400">Signed in</p>
-            </div>
-          </Show>
+        <div className="mt-3 border-t border-slate-100 pt-3">
+          <SupabaseAuthControl surface="sidebar" />
         </div>
       </div>
     </aside>
