@@ -2,7 +2,6 @@
 
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { useDocumentStore } from "@/store/useDocumentStore";
-import { useSettingsStore, type ThemeOption } from "@/store/useSettingsStore";
 import { useUIStore, type WorkspaceView } from "@/store/useUIStore";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
@@ -28,12 +27,6 @@ const FOOTER_ITEMS: {
 }[] = [
   { icon: "help", label: "Help", view: "help" },
   { icon: "trash", label: "Trash", view: "trash", count: "trash" },
-];
-
-const THEME_OPTIONS: { value: ThemeOption; label: string }[] = [
-  { value: "dark", label: "Dark" },
-  { value: "light", label: "Light" },
-  { value: "system", label: "System" },
 ];
 
 function NavButton({
@@ -74,7 +67,6 @@ function NavButton({
 
 export function Sidebar() {
   const { pages, createPage } = useDocumentStore();
-  const { theme, setTheme } = useSettingsStore();
   const { setWorkspaceView } = useUIStore();
   const liveCount = pages.filter((page) => !page.deletedAt).length;
   const trashCount = pages.filter((page) => page.deletedAt).length;
@@ -103,9 +95,9 @@ export function Sidebar() {
           </div>
           <div className="flex min-w-0 flex-1 flex-col">
             <span className="truncate text-[15px] font-bold leading-snug text-slate-950">
-              Intellect Workspace
+              quill
             </span>
-            <span className="truncate text-[12px] text-slate-500">Local writing space</span>
+            <span className="truncate text-[12px] text-slate-500">quiet writing space</span>
           </div>
         </button>
       </div>
@@ -136,23 +128,6 @@ export function Sidebar() {
             <NavButton key={item.view} {...item} count={resolveCount(item.count)} />
           ))}
         </nav>
-        <div className="mt-3 grid grid-cols-3 rounded-xl bg-slate-100 p-1 text-[12px] font-medium text-slate-400">
-          {THEME_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => setTheme(option.value)}
-              className={cn(
-                "rounded-lg px-2 py-1.5 text-center transition-all",
-                theme === option.value
-                  ? "bg-white text-slate-950 shadow-sm"
-                  : "hover:text-slate-600"
-              )}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
         <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
           <Show when="signed-out">
             <div className="grid w-full grid-cols-2 gap-2">

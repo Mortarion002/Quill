@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Quill — Intellect Workspace",
+  title: "quill - quiet writing space",
   description: "A minimal, premium writing environment for focused thinking.",
 };
 

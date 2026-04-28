@@ -22,29 +22,14 @@ const FONT_MAP = {
 
 /* Applies font + line-height settings to CSS custom properties on :root */
 function SettingsApplier() {
-  const { font, lineSpacing, theme } = useSettingsStore();
+  const { font, lineSpacing } = useSettingsStore();
 
   useEffect(() => {
     document.documentElement.style.setProperty("--editor-font", FONT_MAP[font]);
     document.documentElement.style.setProperty("--editor-line-height", String(lineSpacing));
+    document.documentElement.dataset.theme = "light";
+    document.documentElement.classList.remove("dark");
   }, [font, lineSpacing]);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-
-    const applyTheme = () => {
-      const resolvedTheme = theme === "system" ? (media.matches ? "dark" : "light") : theme;
-      document.documentElement.dataset.theme = resolvedTheme;
-      document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
-    };
-
-    applyTheme();
-
-    if (theme !== "system") return;
-
-    media.addEventListener("change", applyTheme);
-    return () => media.removeEventListener("change", applyTheme);
-  }, [theme]);
 
   return null;
 }

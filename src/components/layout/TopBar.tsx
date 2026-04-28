@@ -1,5 +1,6 @@
 "use client";
 
+import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
 import { Icon } from "@/components/ui/Icon";
@@ -37,41 +38,37 @@ export function TopBar() {
       </div>
 
       <div className="flex shrink-0 items-center gap-3">
-        <div className="flex items-center gap-4 border-r border-slate-200 pr-4">
-          <button type="button" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-950">
-            Share
-          </button>
-          <button type="button" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-950">
-            Publish
-          </button>
-        </div>
-
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-950"
-            title="History"
-          >
-            <Icon name="clock" className="h-4.5 w-4.5" />
-          </button>
-          <button
-            type="button"
-            onClick={toggleInspector}
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg transition-all",
-              inspectorOpen
-                ? "bg-violet-50 text-violet-600"
-                : "text-slate-400 hover:bg-slate-100 hover:text-slate-950"
-            )}
-            title="Toggle Inspector"
-          >
-            <Icon name="more" className="h-4.5 w-4.5" />
-          </button>
-        </div>
-
-        <div className="ml-1 flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 transition-colors hover:border-slate-300">
-          <Icon name="user" className="h-4 w-4 text-slate-500" />
-        </div>
+        <span className="hidden rounded-full border border-slate-200 bg-white/70 px-3 py-1.5 text-[12px] font-semibold text-slate-500 shadow-sm sm:inline-flex">
+          Saved locally
+        </span>
+        <button
+          type="button"
+          onClick={toggleInspector}
+          className={cn(
+            "inline-flex h-9 items-center gap-2 rounded-full border px-3 text-[13px] font-semibold transition-all",
+            inspectorOpen
+              ? "border-violet-200 bg-violet-50 text-violet-700 shadow-sm"
+              : "border-slate-200 bg-white/70 text-slate-500 hover:border-slate-300 hover:text-slate-950"
+          )}
+        >
+          <Icon name="settings" className="h-4 w-4" />
+          Inspector
+        </button>
+        <Show when="signed-out">
+          <SignInButton mode="modal">
+            <button
+              type="button"
+              className="h-9 rounded-full border border-slate-200 bg-white px-3.5 text-[13px] font-semibold text-slate-700 shadow-sm transition-colors hover:text-slate-950"
+            >
+              Sign in
+            </button>
+          </SignInButton>
+        </Show>
+        <Show when="signed-in">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm">
+            <UserButton />
+          </div>
+        </Show>
       </div>
     </header>
   );
