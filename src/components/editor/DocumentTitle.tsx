@@ -1,40 +1,85 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
+import { EmojiPicker } from "./EmojiPicker";
 
 interface DocumentTitleProps {
   pageId: string;
   title: string;
+  emoji?: string;
 }
 
-export function DocumentTitle({ pageId, title }: DocumentTitleProps) {
+export function DocumentTitle({ pageId, title, emoji }: DocumentTitleProps) {
   const { updatePage } = useDocumentStore();
-  const ref = useRef<HTMLHeadingElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const [emojiOpen, setEmojiOpen] = useState(false);
 
   const handleBlur = () => {
-    const newTitle = ref.current?.textContent?.trim() || "Untitled";
+    const newTitle = titleRef.current?.textContent?.trim() || "Untitled";
     updatePage(pageId, { title: newTitle });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      ref.current?.blur();
+      titleRef.current?.blur();
     }
   };
 
+  const handleEmojiSelect = (em: string) => {
+    updatePage(pageId, { emoji: em });
+    setEmojiOpen(false);
+  };
+
   return (
-    <h1
-      ref={ref}
-      contentEditable
-      suppressContentEditableWarning
-      data-placeholder="Untitled Document"
-      className="text-[60px] font-bold leading-[1.1] tracking-[-0.04em] text-on-surface outline-none w-full break-words cursor-text caret-primary"
-      onBlur={handleBlur}
-      onKeyDown={handleKeyDown}
-    >
-      {title}
-    </h1>
+    <div className="group/title">
+      {/* ─── Emoji row ─── */}
+      <div className="relative inline-block mb-4">
+        {emoji ? (
+          <button
+            type="button"
+            title="Change emoji"
+            onClick={() => setEmojiOpen((v) => !v)}
+            className="text-[56px] leading-none block hover:scale-105 transition-transform duration-150 select-none"
+          >
+            {emoji}
+          </button>
+        ) : (
+          <button
+            type="button"
+            title="Add emoji"
+            onClick={() => setEmojiOpen((v) => !v)}
+            className="flex items-center gap-1.5 text-[12px] text-slate-600 hover:text-slate-400 transition-all duration-150 mb-1 opacity-0 group-hover/title:opacity-100"
+          >
+            <span className="material-symbols-outlined text-[15px]">add_reaction</span>
+            Add emoji
+          </button>
+        )}
+
+        <AnimatePresence>
+          {emojiOpen && (
+            <EmojiPicker
+              onSelect={handleEmojiSelect}
+              onClose={() => setEmojiOpen(false)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* ─── Title ─── */}
+      <h1
+        ref={titleRef}
+        contentEditable
+        suppressContentEditableWarning
+        data-placeholder="Untitled Document"
+        className="text-[60px] font-bold leading-[1.1] tracking-[-0.04em] text-on-surface outline-none w-full wrap-break-word cursor-text caret-primary"
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+      >
+        {title}
+      </h1>
+    </div>
   );
 }

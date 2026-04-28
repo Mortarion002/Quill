@@ -36,10 +36,12 @@ function EditorSkeleton() {
 function DocumentCanvas({
   pageId,
   title,
+  emoji,
   content,
 }: {
   pageId: string;
   title: string;
+  emoji?: string;
   content: string;
 }) {
   return (
@@ -51,7 +53,7 @@ function DocumentCanvas({
       className="flex justify-center"
     >
       <div className="w-full max-w-180 px-8 pt-24 pb-40">
-        <DocumentTitle pageId={pageId} title={title} />
+        <DocumentTitle pageId={pageId} title={title} emoji={emoji} />
         <div className="mt-8 relative">
           <Editor pageId={pageId} initialContent={content} />
         </div>
@@ -113,6 +115,7 @@ export default function EditorPage() {
               key={activePage.id}
               pageId={activePage.id}
               title={activePage.title}
+              emoji={activePage.emoji}
               content={activePage.content}
             />
           ) : (

@@ -19,11 +19,12 @@ const FOOTER_ITEMS = [
 ] as const;
 
 export function Sidebar() {
-  const { pages, activePageId, createPage, setActivePage, deletePage } =
+  const { pages, activePageId, createPage, setActivePage, deletePage, updatePage } =
     useDocumentStore();
   const [activeNav, setActiveNav] = useState<string>("Pages");
   const [pagesExpanded, setPagesExpanded] = useState(true);
   const [hoveredPageId, setHoveredPageId] = useState<string | null>(null);
+  const [renamingPageId, setRenamingPageId] = useState<string | null>(null);
 
   const handleNewPage = () => {
     createPage("Untitled");
@@ -143,7 +144,7 @@ export function Sidebar() {
                               key={page.id}
                               onMouseEnter={() => setHoveredPageId(page.id)}
                               onMouseLeave={() => setHoveredPageId(null)}
-                              onClick={() => setActivePage(page.id)}
+                              onClick={() => renamingPageId !== page.id && setActivePage(page.id)}
                               className={cn(
                                 "group flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-all duration-150 text-[13px]",
                                 page.id === activePageId
@@ -151,14 +152,55 @@ export function Sidebar() {
                                   : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
                               )}
                             >
-                              <span className="material-symbols-outlined text-[14px] flex-shrink-0 opacity-60">
-                                description
-                              </span>
-                              <span className="truncate flex-1">
-                                {page.title || "Untitled"}
-                              </span>
-                              {hoveredPageId === page.id && (
-                                <button type="button"
+                              {/* Emoji or fallback icon */}
+                              {page.emoji ? (
+                                <span className="text-[14px] shrink-0 leading-none select-none">
+                                  {page.emoji}
+                                </span>
+                              ) : (
+                                <span className="material-symbols-outlined text-[14px] shrink-0 opacity-60">
+                                  description
+                                </span>
+                              )}
+
+                              {/* Title or rename input */}
+                              {renamingPageId === page.id ? (
+                                <input
+                                  autoFocus
+                                  defaultValue={page.title}
+                                  className="flex-1 min-w-0 bg-transparent text-[13px] text-slate-200 outline-none border-b border-violet-500/50 placeholder:text-slate-600"
+                                  placeholder="Untitled"
+                                  onClick={(e) => e.stopPropagation()}
+                                  onBlur={(e) => {
+                                    updatePage(page.id, { title: e.target.value.trim() || "Untitled" });
+                                    setRenamingPageId(null);
+                                  }}
+                                  onKeyDown={(e) => {
+                                    e.stopPropagation();
+                                    if (e.key === "Enter") {
+                                      updatePage(page.id, { title: e.currentTarget.value.trim() || "Untitled" });
+                                      setRenamingPageId(null);
+                                    }
+                                    if (e.key === "Escape") setRenamingPageId(null);
+                                  }}
+                                />
+                              ) : (
+                                <span
+                                  className="truncate flex-1"
+                                  onDoubleClick={(e) => {
+                                    e.stopPropagation();
+                                    setRenamingPageId(page.id);
+                                  }}
+                                >
+                                  {page.title || "Untitled"}
+                                </span>
+                              )}
+
+                              {/* Delete button */}
+                              {hoveredPageId === page.id && renamingPageId !== page.id && (
+                                <button
+                                  type="button"
+                                  title="Delete page"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     deletePage(page.id);

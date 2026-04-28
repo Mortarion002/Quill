@@ -83,10 +83,31 @@ export function EmptyState({ pageId, onActivate }: EmptyStateProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.4 }}
-          className="flex items-center gap-2 text-outline-variant text-lg"
+          className="flex items-center gap-2 text-outline-variant text-lg mb-6"
         >
           <span>Type &apos;/&apos; for commands, or start writing…</span>
           <span className="inline-block w-0.5 h-5.5 bg-primary rounded-full cursor-blink" />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.35 }}
+          className="flex items-center gap-4 flex-wrap"
+        >
+          {[
+            { key: "/",   label: "Commands" },
+            { key: "⌘ B", label: "Bold"     },
+            { key: "⌘ I", label: "Italic"   },
+            { key: "⌘ Z", label: "Undo"     },
+          ].map(({ key, label }) => (
+            <span key={key} className="flex items-center gap-2 text-[12px] text-slate-600 select-none">
+              <kbd className="px-1.5 py-0.5 rounded-md bg-surface-container-high border border-white/8 text-slate-500 font-mono text-[11px] leading-none">
+                {key}
+              </kbd>
+              {label}
+            </span>
+          ))}
         </motion.div>
       </div>
 
