@@ -38,29 +38,26 @@ export function TopBar() {
       </div>
 
       <div className="flex shrink-0 items-center gap-3">
-        <span
-          title={cloudMessage ?? undefined}
-          className={cn(
-            "hidden rounded-full border px-3 py-1.5 text-[12px] font-semibold shadow-sm sm:inline-flex",
-            cloudStatus === "synced" && "border-emerald-100 bg-emerald-50 text-emerald-700",
-            cloudStatus === "syncing" && "border-violet-100 bg-violet-50 text-violet-700",
-            cloudStatus === "loading" && "border-slate-200 bg-white/70 text-slate-500",
-            cloudStatus === "error" && "border-red-100 bg-red-50 text-red-500",
-            (cloudStatus === "local" || cloudStatus === "setup") && "border-slate-200 bg-white/70 text-slate-500"
-          )}
-        >
-          {cloudStatus === "synced"
-            ? lastSyncedAt
-              ? "Cloud saved"
-              : "Cloud ready"
-            : cloudStatus === "syncing"
-              ? "Syncing"
-              : cloudStatus === "loading"
-                ? "Loading cloud"
-                : cloudStatus === "error"
-                  ? "Sync issue"
-                  : "Saved locally"}
-        </span>
+        {cloudStatus !== "local" && cloudStatus !== "setup" && (
+          <span
+            title={cloudMessage ?? undefined}
+            className={cn(
+              "hidden rounded-full border px-3 py-1.5 text-[12px] font-semibold shadow-sm sm:inline-flex",
+              cloudStatus === "synced" && "border-emerald-100 bg-emerald-50 text-emerald-700",
+              cloudStatus === "syncing" && "border-violet-100 bg-violet-50 text-violet-700",
+              cloudStatus === "loading" && "border-slate-200 bg-white/70 text-slate-500",
+              cloudStatus === "error" && "border-red-100 bg-red-50 text-red-500"
+            )}
+          >
+            {cloudStatus === "synced"
+              ? lastSyncedAt ? "Cloud saved" : "Cloud ready"
+              : cloudStatus === "syncing"
+                ? "Syncing"
+                : cloudStatus === "loading"
+                  ? "Loading cloud"
+                  : "Sync issue"}
+          </span>
+        )}
         <button
           type="button"
           onClick={toggleInspector}
