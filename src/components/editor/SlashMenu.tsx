@@ -3,27 +3,28 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
 export interface SlashCommand {
   id: string;
   category: string;
-  icon: string;
+  icon: IconName;
   label: string;
   desc: string;
   keywords: string[];
 }
 
 export const ALL_COMMANDS: SlashCommand[] = [
-  { id: "h1",      category: "Text",  icon: "title",                label: "Heading 1",     desc: "Large section heading",   keywords: ["h1", "heading", "title"] },
-  { id: "h2",      category: "Text",  icon: "title",                label: "Heading 2",     desc: "Medium section heading",  keywords: ["h2", "heading"] },
-  { id: "h3",      category: "Text",  icon: "title",                label: "Heading 3",     desc: "Small section heading",   keywords: ["h3", "heading"] },
-  { id: "p",       category: "Text",  icon: "notes",                label: "Paragraph",     desc: "Plain text block",        keywords: ["text", "paragraph", "body"] },
-  { id: "ul",      category: "List",  icon: "format_list_bulleted", label: "Bullet List",   desc: "Unordered list",          keywords: ["ul", "bullet", "list"] },
-  { id: "ol",      category: "List",  icon: "format_list_numbered", label: "Numbered List", desc: "Ordered numbered list",   keywords: ["ol", "numbered", "ordered"] },
-  { id: "quote",   category: "Other", icon: "format_quote",         label: "Quote",         desc: "Highlighted quote block", keywords: ["quote", "blockquote"] },
-  { id: "code",    category: "Other", icon: "code",                 label: "Code Block",    desc: "Monospaced code snippet", keywords: ["code", "pre", "snippet"] },
-  { id: "divider", category: "Other", icon: "horizontal_rule",      label: "Divider",       desc: "Horizontal separator",    keywords: ["hr", "divider", "line"] },
+  { id: "h1", category: "Text", icon: "type", label: "Heading 1", desc: "Large section heading", keywords: ["h1", "heading", "title"] },
+  { id: "h2", category: "Text", icon: "type", label: "Heading 2", desc: "Medium section heading", keywords: ["h2", "heading"] },
+  { id: "h3", category: "Text", icon: "type", label: "Heading 3", desc: "Small section heading", keywords: ["h3", "heading"] },
+  { id: "p", category: "Text", icon: "note", label: "Paragraph", desc: "Plain text block", keywords: ["text", "paragraph", "body"] },
+  { id: "ul", category: "List", icon: "list", label: "Bullet List", desc: "Unordered list", keywords: ["ul", "bullet", "list"] },
+  { id: "ol", category: "List", icon: "numberedList", label: "Numbered List", desc: "Ordered numbered list", keywords: ["ol", "numbered", "ordered"] },
+  { id: "quote", category: "Other", icon: "quote", label: "Quote", desc: "Highlighted quote block", keywords: ["quote", "blockquote"] },
+  { id: "code", category: "Other", icon: "code", label: "Code Block", desc: "Monospaced code snippet", keywords: ["code", "pre", "snippet"] },
+  { id: "divider", category: "Other", icon: "divider", label: "Divider", desc: "Horizontal separator", keywords: ["hr", "divider", "line"] },
 ];
 
 const CATEGORY_ORDER = ["Text", "List", "Other"];
@@ -107,9 +108,7 @@ export function SlashMenu({ open, commands, position, activeIndex, onSelect }: S
                               isActive ? "bg-violet-500/20" : "bg-surface-container-high"
                             )}
                           >
-                            <span className="material-symbols-outlined text-[17px] text-slate-400">
-                              {cmd.icon}
-                            </span>
+                            <Icon name={cmd.icon} className="h-4 w-4 text-slate-400" />
                           </div>
                           <div className="min-w-0">
                             <p className="text-[13px] font-medium leading-tight">{cmd.label}</p>

@@ -2,6 +2,7 @@
 
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import type { Editor } from "@tiptap/core";
 
@@ -12,10 +13,10 @@ interface SelectionToolbarProps {
 }
 
 const FORMATTING = [
-  { id: "bold",   mark: "bold",   icon: "format_bold",          label: "Bold"          },
-  { id: "italic", mark: "italic", icon: "format_italic",        label: "Italic"        },
-  { id: "strike", mark: "strike", icon: "format_strikethrough", label: "Strikethrough" },
-  { id: "code",   mark: "code",   icon: "code",                 label: "Inline code"   },
+  { id: "bold", mark: "bold", icon: "bold", label: "Bold" },
+  { id: "italic", mark: "italic", icon: "italic", label: "Italic" },
+  { id: "strike", mark: "strike", icon: "strike", label: "Strikethrough" },
+  { id: "code", mark: "code", icon: "code", label: "Inline code" },
 ] as const;
 
 const ACTIONS: Record<string, (editor: Editor) => void> = {
@@ -61,7 +62,7 @@ export function SelectionToolbar({ editor, open, position }: SelectionToolbarPro
                   : "text-slate-400 hover:bg-white/8 hover:text-slate-200"
               )}
             >
-              <span className="material-symbols-outlined text-[17px]">{icon}</span>
+              <Icon name={icon as IconName} className="h-4 w-4" />
             </button>
           ))}
 
@@ -73,7 +74,7 @@ export function SelectionToolbar({ editor, open, position }: SelectionToolbarPro
             title="Link (coming soon)"
             className="w-8 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-white/8 hover:text-slate-200 transition-colors duration-100"
           >
-            <span className="material-symbols-outlined text-[17px]">link</span>
+            <Icon name="link" className="h-4 w-4" />
           </button>
 
           <div className="w-px h-4 bg-white/10 mx-1 flex-shrink-0" />
@@ -84,7 +85,7 @@ export function SelectionToolbar({ editor, open, position }: SelectionToolbarPro
             title="AI Rewrite (coming soon)"
             className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-[12px] font-medium ai-rewrite-btn transition-all duration-100"
           >
-            <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
+            <Icon name="wand" className="h-3.5 w-3.5" />
             <span>Rewrite</span>
           </button>
         </motion.div>

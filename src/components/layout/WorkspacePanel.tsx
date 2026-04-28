@@ -102,7 +102,7 @@ function PageRow({
 }: {
   page: ReturnType<typeof useDocumentStore.getState>["pages"][number];
 }) {
-  const { setActivePage, toggleFavorite } = useDocumentStore();
+  const { setActivePage, toggleFavorite, deletePage } = useDocumentStore();
   const { setWorkspaceView } = useUIStore();
 
   const openPage = () => {
@@ -125,17 +125,27 @@ function PageRow({
           </div>
         </div>
       </button>
-      <button
-        type="button"
-        title={page.favorite ? "Remove from favorites" : "Add to favorites"}
-        onClick={() => toggleFavorite(page.id)}
-        className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-xl transition-colors",
-          page.favorite ? "bg-violet-50 text-violet-600" : "text-slate-300 hover:bg-slate-50 hover:text-slate-600"
-        )}
-      >
-        <Icon name="star" className="h-4.5 w-4.5" />
-      </button>
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          title={page.favorite ? "Remove from favorites" : "Add to favorites"}
+          onClick={() => toggleFavorite(page.id)}
+          className={cn(
+            "flex h-9 w-9 items-center justify-center rounded-xl transition-colors",
+            page.favorite ? "bg-violet-50 text-violet-600" : "text-slate-300 hover:bg-slate-50 hover:text-slate-600"
+          )}
+        >
+          <Icon name="star" className="h-4.5 w-4.5" />
+        </button>
+        <button
+          type="button"
+          title="Move to trash"
+          onClick={() => deletePage(page.id)}
+          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 transition-colors hover:bg-red-50 hover:text-red-500"
+        >
+          <Icon name="trash" className="h-4.5 w-4.5" />
+        </button>
+      </div>
     </div>
   );
 }

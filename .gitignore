@@ -43,3 +43,10 @@ next-env.d.ts
 
 # local auth tool configuration
 /.clerk/
+
+# local agent/tooling context
+/.claude/
+/docs/
+/AGENTS.md
+/CLAUDE.md
+/PROJECT_CONTEXT.md
