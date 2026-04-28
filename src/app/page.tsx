@@ -414,7 +414,7 @@ type TabId = "write" | "organize" | "sync";
 function WorkflowContent({ tab }: { tab: TabId }) {
   if (tab === "write") {
     return (
-      <div className="p-6">
+      <div className="flex min-h-[310px] flex-col justify-center p-6">
         <div className="text-base font-bold text-slate-900 mb-3">
           Product Strategy
         </div>
@@ -451,7 +451,7 @@ function WorkflowContent({ tab }: { tab: TabId }) {
       { title: "Old Draft", tag: "Trash", tagClass: "bg-red-100 text-red-600" },
     ];
     return (
-      <div className="p-5">
+      <div className="flex min-h-[310px] flex-col justify-center p-5">
         <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-3">
           All Pages
         </div>
@@ -478,7 +478,7 @@ function WorkflowContent({ tab }: { tab: TabId }) {
   }
 
   return (
-    <div className="p-6 flex flex-col items-center justify-center h-full gap-5 min-h-[260px]">
+    <div className="p-6 flex flex-col items-center justify-center h-full gap-5 min-h-[310px]">
       <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center">
         <Wifi className="w-7 h-7 text-emerald-500" />
       </div>
@@ -560,14 +560,14 @@ function Workflow() {
 
           {/* Right: mockup */}
           <motion.div {...reveal(0.2)}>
-            <AnimatePresence mode="wait">
+            <AnimatePresence initial={false}>
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="bg-white rounded-2xl border border-slate-200 shadow-[0_8px_30px_rgba(0,0,0,0.07)] overflow-hidden"
+                initial={{ opacity: 0, y: 6, filter: "blur(3px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -6, filter: "blur(3px)" }}
+                transition={{ duration: 0.14, ease: "easeOut" }}
+                className="min-h-[310px] bg-white rounded-2xl border border-slate-200 shadow-[0_8px_30px_rgba(0,0,0,0.07)] overflow-hidden will-change-transform"
               >
                 <WorkflowContent tab={activeTab} />
               </motion.div>

@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
+import { Icon } from "@/components/ui/Icon";
 import { SlashMenu, ALL_COMMANDS, type SlashCommand } from "./SlashMenu";
 import { SelectionToolbar } from "./SelectionToolbar";
 
@@ -426,7 +427,7 @@ export function Editor({ pageId, initialContent }: EditorProps) {
               className="w-6 h-6 flex items-center justify-center rounded text-outline/60 hover:text-on-surface hover:bg-surface-container-high transition-all duration-100"
               title="Add block"
             >
-              <span className="material-symbols-outlined text-[17px]">add</span>
+              <Icon name="plus" className="h-4 w-4" />
             </button>
             <button
               type="button"
@@ -434,7 +435,7 @@ export function Editor({ pageId, initialContent }: EditorProps) {
               className="w-5 h-6 flex items-center justify-center rounded text-outline/35 hover:text-on-surface cursor-grab hover:bg-surface-container-high transition-all duration-100"
               title="Drag to reorder"
             >
-              <span className="material-symbols-outlined text-[17px]">drag_indicator</span>
+              <Icon name="drag" className="h-4 w-4" />
             </button>
           </motion.div>
         )}
