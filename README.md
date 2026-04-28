@@ -1,267 +1,263 @@
-# Quill — Quiet Writing Space
+# Quill
 
-A premium, local-first writing environment built for focused thinking. Quill works entirely offline out of the box and optionally syncs to the cloud when you sign in.
+Quiet writing space for focused documents.
 
----
+Quill is a local-first block editor built with Next.js, TipTap, Zustand, and Supabase. It works offline in the browser by default, then adds authentication and cloud sync when Supabase environment variables are configured.
 
-## Overview
+Live app: https://quill-tau-eight.vercel.app
 
-Quill is a block-based document editor inspired by Notion and iA Writer. It combines a distraction-free writing experience with optional Supabase cloud sync, making it useful as both a personal scratchpad and a cloud-backed workspace.
+## Product Intent
 
-**Core philosophy:**
+Quill is not a CRUD dashboard. It is a writing environment designed to feel calm, clear, and responsive.
 
-- **Local-first** — everything works in the browser without an account
-- **Cloud-optional** — sign in to back up and sync across devices
-- **Quiet UI** — minimal chrome, focused on the writing surface
+The interface prioritizes:
 
----
+- A minimal editor surface
+- Fast writing feedback
+- Local-first document ownership
+- Optional cloud backup and sync
+- A polished UI/UX showcase suitable for Vercel hosting
 
-## Features
+## Current Features
 
 ### Editor
 
-- Block-based rich text via TipTap (ProseMirror)
-- Slash command menu (`/`) — headings, lists, blockquotes, code blocks, dividers
-- Selection toolbar — appears on text selection for bold, italic, alignment, and links
-- Drag-to-reorder blocks via floating drag handle
-- Real-time document stats (word count, character count, block count)
-- Configurable font: Inter, Georgia (serif), or system monospace
-- Adjustable line spacing (1.25 – 2.25)
+- Block-based rich text editor powered by TipTap and ProseMirror
+- Slash command menu for headings, lists, blockquotes, code blocks, and dividers
+- Selection toolbar for formatting text
+- Drag-to-reorder editor blocks
+- Editable document title and emoji icon
+- Live document statistics
+- Configurable editor font
+- Adjustable line spacing
 - Spell check toggle
-- Emoji icon picker per document
 
 ### Workspace
 
-- Sidebar navigation: Pages, Favorites, Templates, Search, Settings, Help, Trash
-- New Page button with auto-focus on title
-- Soft delete with restore from Trash
-- Inspector panel (right sidebar) for per-block formatting controls
+- Sidebar navigation for Search, Pages, Favorites, Templates, Settings, Help, and Trash
+- New Page flow with title focus
+- Favorites view
+- Soft delete and restore from Trash
+- Dedicated main-surface views for workspace sections
+- Inspector panel for block-level design controls
 
-### Auth & Cloud Sync
+### Auth And Sync
 
-- Email/password sign up and sign in via Supabase Auth
-- Debounced auto-save to Supabase Postgres (900ms, non-blocking)
-- Local-first merge: newer `updatedAt` wins per document
-- Sync status indicator in the top bar (Local / Syncing / Cloud saved / Sync issue)
-- RLS-enforced: users can only access their own documents
+- Email/password authentication with Supabase Auth
+- Local-first Zustand document store persisted to localStorage
+- Debounced cloud sync to Supabase Postgres
+- Last-write-wins merge based on `updatedAt`
+- Sync status in the top bar
+- Row Level Security for user-owned documents
 
 ### Landing Page
 
-- Full marketing site at `/`
-- Hero, Features, Workflow tabs, Pricing, FAQ, CTA, and Footer sections
-- Framer Motion scroll animations and floating UI mockup
-
----
+- Marketing page at `/`
+- Hero, workflow, pricing, FAQ, and CTA sections
+- Framer Motion interactions
+- Lucide React icons for landing page UI details
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-| --- | --- | --- |
-| Framework | Next.js App Router | 16.2.4 |
-| UI Runtime | React | 19.2.4 |
-| Language | TypeScript | 5 |
-| Editor | TipTap (ProseMirror) | 3.22.4 |
-| State | Zustand | 5.0.12 |
-| Animation | Framer Motion | 12.38.0 |
-| Styling | Tailwind CSS | v4 |
-| Auth | Supabase Auth | 2.105.0 |
-| Database | Supabase Postgres | — |
-| SSR sessions | @supabase/ssr | 0.10.2 |
-| Fonts | Next.js Google Fonts (Inter, Plus Jakarta Sans) | — |
-
----
+| Layer | Technology |
+| --- | --- |
+| Framework | Next.js 16 App Router |
+| UI Runtime | React 19 |
+| Language | TypeScript |
+| Editor | TipTap 3 / ProseMirror |
+| State | Zustand |
+| Animation | Framer Motion |
+| Styling | Tailwind CSS v4 |
+| Auth | Supabase Auth |
+| Database | Supabase Postgres |
+| SSR Sessions | `@supabase/ssr` |
+| Icons | Custom inline editor icons, Lucide React on landing page |
+| Hosting | Vercel |
 
 ## Project Structure
 
 ```text
 src/
-├── app/
-│   ├── layout.tsx              # Root layout, font setup
-│   ├── page.tsx                # Marketing landing page
-│   └── editor/
-│       └── page.tsx            # Editor workspace shell
-│
-├── components/
-│   ├── auth/
-│   │   └── SupabaseAuthControl.tsx   # Auth modal + user button
-│   ├── editor/
-│   │   ├── Editor.tsx                # TipTap editor (core)
-│   │   ├── DocumentTitle.tsx         # Title + emoji picker
-│   │   ├── SlashMenu.tsx             # / command palette
-│   │   ├── SelectionToolbar.tsx      # Inline formatting toolbar
-│   │   ├── EmojiPicker.tsx           # Emoji panel
-│   │   └── EmptyState.tsx            # New document prompt
-│   ├── layout/
-│   │   ├── Sidebar.tsx               # Left nav
-│   │   ├── TopBar.tsx                # Header bar
-│   │   ├── Inspector.tsx             # Right panel
-│   │   └── WorkspacePanel.tsx        # Pages / Settings / Trash views
-│   ├── sync/
-│   │   └── CloudDocumentSync.tsx     # Background sync orchestrator
-│   └── ui/
-│       └── Icon.tsx                  # Icon wrapper
-│
-├── lib/
-│   ├── documents/
-│   │   └── cloudDocuments.ts         # Supabase CRUD + merge logic
-│   └── supabase/
-│       ├── client.ts                 # Browser Supabase client
-│       ├── server.ts                 # Server-side Supabase client
-│       ├── config.ts                 # Env var validation
-│       └── proxy.ts                  # Session refresh middleware helper
-│
-├── store/
-│   ├── useDocumentStore.ts           # Pages, sync status, CRUD actions
-│   ├── useUIStore.ts                 # Active view, inspector, editor ref, doc stats
-│   └── useSettingsStore.ts           # Font, line spacing, spell check
-│
-└── types/
-    └── index.ts                      # Page, Block, BlockType interfaces
-```
+  app/
+    layout.tsx
+    page.tsx
+    editor/
+      page.tsx
+  components/
+    auth/
+      SupabaseAuthControl.tsx
+    editor/
+      DocumentTitle.tsx
+      Editor.tsx
+      EmojiPicker.tsx
+      EmptyState.tsx
+      SelectionToolbar.tsx
+      SlashMenu.tsx
+    layout/
+      Inspector.tsx
+      Sidebar.tsx
+      TopBar.tsx
+      WorkspacePanel.tsx
+    sync/
+      CloudDocumentSync.tsx
+    ui/
+      Icon.tsx
+  lib/
+    documents/
+      cloudDocuments.ts
+    supabase/
+      client.ts
+      config.ts
+      proxy.ts
+      server.ts
+  store/
+    useDocumentStore.ts
+    useSettingsStore.ts
+    useUIStore.ts
+  types/
+    index.ts
 
----
+supabase/
+  migrations/
+    0001_documents.sql
+```
 
 ## Getting Started
 
-### Prerequisites
+### Requirements
 
-- Node.js 18+
-- A [Supabase](https://supabase.com) project (only required for cloud sync — the app works fully offline without it)
+- Node.js 20 or newer recommended
+- npm
+- A Supabase project for auth and cloud sync
 
-### 1. Clone and install
+The app can run without Supabase keys, but auth and cloud sync will stay disabled.
+
+### Install
 
 ```bash
-git clone <your-repo-url>
-cd quill
 npm install
 ```
 
-### 2. Configure environment variables
+### Environment
 
-Copy the example file and fill in your values:
+Create a local `.env` file from the example file:
 
 ```bash
 cp .env.example .env
 ```
 
+Set these values:
+
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://<your-project-ref>.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-or-anon-key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-Find your values in the Supabase dashboard under **Project Settings → API**.
+For production, set `NEXT_PUBLIC_SITE_URL` to the deployed Vercel URL or custom domain.
 
-> If you skip this step the app still works — you just won't have cloud sync or auth.
+Do not put a Supabase service role key in this frontend app.
 
-### 3. Set up the database
+### Database
 
-In the Supabase dashboard, open the **SQL Editor** and run:
+Run the migration in Supabase SQL Editor:
 
 ```sql
--- Documents table
-create table public.documents (
-  id           text primary key,
-  user_id      uuid not null references auth.users(id) on delete cascade,
-  title        text not null default 'Untitled',
-  content      text not null default '',
-  emoji        text,
-  favorite     boolean not null default false,
-  deleted_at   timestamptz,
-  created_at   timestamptz not null default now(),
-  updated_at   timestamptz not null default now()
-);
-
--- Index for fast user-scoped queries
-create index documents_user_updated_idx
-  on public.documents (user_id, updated_at desc);
-
--- Row Level Security
-alter table public.documents enable row level security;
-
-create policy "Users manage own documents"
-  on public.documents
-  for all
-  using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
+supabase/migrations/0001_documents.sql
 ```
 
-### 4. Run the dev server
+The migration creates the `public.documents` table, enables Row Level Security, and adds user-scoped policies.
+
+### Development
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the landing page or [http://localhost:3000/editor](http://localhost:3000/editor) to go straight to the editor.
+Open:
 
----
+- Landing page: http://localhost:3000
+- Editor: http://localhost:3000/editor
 
 ## Scripts
 
 | Command | Description |
 | --- | --- |
-| `npm run dev` | Start development server |
-| `npm run build` | Production build |
-| `npm start` | Start production server |
+| `npm run dev` | Start the local Next.js dev server |
+| `npm run build` | Create a production build |
+| `npm start` | Start the production server |
 | `npm run lint` | Run ESLint |
 
----
+## Deployment
 
-## State Management
+The project is deployed on Vercel from the `main` branch.
 
-Quill uses three Zustand stores:
-
-**`useDocumentStore`** *(persisted to localStorage)*
-
-- All pages (including soft-deleted)
-- Active page ID
-- Cloud sync status and timestamp
-- Pending cloud deletes queue
-- CRUD actions: `createPage`, `updatePage`, `deletePage`, `restorePage`, `permanentlyDeletePage`, `toggleFavorite`
-
-**`useUIStore`** *(in-memory)*
-
-- Current workspace view (`editor | search | pages | favorites | templates | settings | help | trash`)
-- Inspector panel open/closed
-- Active TipTap editor reference (used by Inspector to apply formatting)
-- Live document stats (words, characters, blocks)
-
-**`useSettingsStore`** *(persisted to localStorage)*
-
-- Editor font (`inter | serif | mono`)
-- Line spacing (1.25 – 2.25)
-- Spell check enabled
-
----
-
-## Cloud Sync Architecture
+Production URL:
 
 ```text
-User types
-    ↓
-useDocumentStore.updatePage()    ← debounced 900ms
-    ↓
-CloudDocumentSync (background component)
-    ↓
-  Fetch cloud pages
-  Merge: newer updatedAt wins per document
-  Upsert changed pages to Supabase
-  Delete permanently deleted pages
-    ↓
-setCloudSynced() → "Cloud saved" in TopBar
+https://quill-tau-eight.vercel.app
 ```
 
-- **Non-blocking** — sync runs entirely in the background, never pauses the editor
-- **Conflict resolution** — last-write-wins per document (by `updatedAt` timestamp)
-- **Soft deletes** — documents marked with `deleted_at`, restorable from Trash
-- **Permanent deletes** — removed from local store, queued for Supabase deletion on next sync
-- **RLS enforced** — Supabase only returns rows where `auth.uid() = user_id`
+Vercel should use:
 
----
+- Framework Preset: Next.js
+- Build Command: auto-detected (`npm run build`)
+- Output Directory: Next.js default
+- Install Command: auto-detected (`npm install`)
 
-## Tailwind v4 — Important Note
+Required Vercel environment variables:
 
-This project uses **Tailwind CSS v4** with custom `@theme` spacing variables in `globals.css`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-or-anon-key
+NEXT_PUBLIC_SITE_URL=https://quill-tau-eight.vercel.app
+```
+
+In Supabase, add the production URL to Auth URL Configuration so sign-in redirects work correctly.
+
+## State Architecture
+
+Quill uses three Zustand stores.
+
+`useDocumentStore` persists document data and sync metadata:
+
+- Pages
+- Active page ID
+- Cloud sync status
+- Pending cloud deletes
+- Create, update, delete, restore, permanent delete, and favorite actions
+
+`useUIStore` manages interface state:
+
+- Active workspace view
+- Inspector visibility
+- Active TipTap editor reference
+- Live document stats
+
+`useSettingsStore` persists editor preferences:
+
+- Editor font
+- Line spacing
+- Spell check enabled
+
+## Cloud Sync Model
+
+```text
+User edits document
+  -> Zustand updates local document immediately
+  -> CloudDocumentSync debounces changes
+  -> Supabase documents are fetched
+  -> Local and cloud documents merge by updatedAt
+  -> Changed documents are upserted
+  -> Pending permanent deletes are applied
+  -> Top bar reports sync status
+```
+
+Sync is intentionally non-blocking. Local writing should continue even if the network or Supabase is unavailable.
+
+## Tailwind CSS v4 Note
+
+This project defines custom `@theme` spacing variables in `src/app/globals.css`:
 
 ```css
 @theme {
@@ -273,49 +269,31 @@ This project uses **Tailwind CSS v4** with custom `@theme` spacing variables in 
 }
 ```
 
-These override Tailwind's named size utilities. `max-w-sm`, `max-w-md`, `max-w-lg`, `max-w-xl` resolve to **8–80px** instead of their usual rem values.
-
-**Always use numeric or arbitrary values instead:**
+Because of this, named utilities such as `max-w-sm`, `max-w-md`, `max-w-lg`, and `max-w-xl` resolve to the custom spacing scale. Prefer numeric or arbitrary width utilities when editing layout code.
 
 ```tsx
-// Broken — resolves to 16px in this project
+// Avoid for large containers in this project
 <div className="max-w-sm">
 
-// Correct
-<div className="max-w-96">     // 24rem (Tailwind numeric scale)
-<div className="max-w-128">    // 32rem (Tailwind numeric scale)
-<div className="max-w-2xl">    // Tailwind numeric scale (unaffected)
+// Prefer
+<div className="max-w-96">
+<div className="max-w-2xl">
+<div className="max-w-[720px]">
 ```
 
----
+## Repository Hygiene
 
-## Deployment
+These files and directories are local-only and should not be committed:
 
-The app is configured for Vercel.
-
-1. Push to GitHub and import the repo in [Vercel](https://vercel.com)
-2. Add the three environment variables in Vercel project settings
-3. Update `NEXT_PUBLIC_SITE_URL` to your production domain
-4. Add your production domain to **Supabase → Auth → URL Configuration → Redirect URLs**
-
-See `docs/deployment.md` for the full checklist.
-
----
-
-## Design System
-
-| Token | Value |
-| --- | --- |
-| Primary | Violet — `#7c3aed` / `violet-600` |
-| Background (light) | `#ececf4` |
-| Background (dark) | `#0b0b0f` |
-| Editor font | Inter (configurable) |
-| Landing font | Plus Jakarta Sans |
-| Icon set | Material Symbols Outlined |
-| Dark mode | `data-theme="dark"` on `<html>` |
-
----
+- `.env`
+- `.vercel/`
+- `.clerk/`
+- `.claude/`
+- `docs/`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `PROJECT_CONTEXT.md`
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See `LICENSE` for details.
