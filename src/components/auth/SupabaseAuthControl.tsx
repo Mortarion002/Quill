@@ -43,7 +43,11 @@ function AuthDialog({
     const supabase = createClient();
     const result = isSignIn
       ? await supabase.auth.signInWithPassword({ email, password })
-      : await supabase.auth.signUp({ email, password });
+      : await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: `${window.location.origin}/editor` },
+        });
 
     setSubmitting(false);
 

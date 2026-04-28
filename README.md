@@ -11,6 +11,10 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 
 `NEXT_PUBLIC_SUPABASE_ANON_KEY` is also supported for older Supabase projects.
 
+Before cloud persistence works, run the SQL in `supabase/migrations/0001_documents.sql` from the Supabase SQL editor.
+
+See `docs/deployment.md` for the Vercel deployment checklist.
+
 ## Getting Started
 
 First, run the development server:
