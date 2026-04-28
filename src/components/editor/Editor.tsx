@@ -9,6 +9,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
+import { useSettingsStore } from "@/store/useSettingsStore";
 import { SlashMenu, ALL_COMMANDS, type SlashCommand } from "./SlashMenu";
 import { SelectionToolbar } from "./SelectionToolbar";
 
@@ -87,6 +88,7 @@ function moveBlock(editor: TipTapEditor, fromIndex: number, toIndex: number) {
 export function Editor({ pageId, initialContent }: EditorProps) {
   const { updatePage } = useDocumentStore();
   const { setActiveBlock, setActiveEditor, setDocStats } = useUIStore();
+  const { spellCheck } = useSettingsStore();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [hoveredBlock, setHoveredBlock] = useState<HoveredBlockInfo | null>(null);
   const prevBlockEl = useRef<HTMLElement | null>(null);
@@ -125,9 +127,11 @@ export function Editor({ pageId, initialContent }: EditorProps) {
     );
   }, [slashMenu.open, slashMenu.query]);
 
-  filteredCommandsRef.current = filteredCommands;
-  slashMenuOpenRef.current = slashMenu.open;
-  slashActiveIndexRef.current = slashMenu.activeIndex;
+  useEffect(() => {
+    filteredCommandsRef.current = filteredCommands;
+    slashMenuOpenRef.current = slashMenu.open;
+    slashActiveIndexRef.current = slashMenu.activeIndex;
+  }, [filteredCommands, slashMenu.open, slashMenu.activeIndex]);
 
   /* ─── TipTap instance ─── */
   const editor = useEditor({
@@ -147,7 +151,7 @@ export function Editor({ pageId, initialContent }: EditorProps) {
     content: initialContent || "",
     immediatelyRender: false,
     editorProps: {
-      attributes: { class: "tiptap focus:outline-none", spellcheck: "false" },
+      attributes: { class: "tiptap focus:outline-none", spellcheck: spellCheck ? "true" : "false" },
     },
     onUpdate: ({ editor }) => {
       /* Save content */
@@ -290,6 +294,12 @@ export function Editor({ pageId, initialContent }: EditorProps) {
     return () => setActiveEditor(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor]);
+
+  /* ─── Sync spell check setting to editor DOM ─── */
+  useEffect(() => {
+    if (!editor) return;
+    editor.view.dom.setAttribute("spellcheck", spellCheck ? "true" : "false");
+  }, [editor, spellCheck]);
 
   /* ─── Sync content when switching pages ─── */
   useEffect(() => {

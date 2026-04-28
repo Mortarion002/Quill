@@ -16,6 +16,8 @@ interface DocumentStore {
   setActivePage: (id: string) => void;
   getActivePage: () => Page | undefined;
   toggleFavorite: (id: string) => void;
+  restorePage: (id: string) => void;
+  permanentlyDeletePage: (id: string) => void;
 }
 
 export const useDocumentStore = create<DocumentStore>()(
@@ -53,13 +55,32 @@ export const useDocumentStore = create<DocumentStore>()(
 
       deletePage: (id) => {
         set((state) => {
-          const remaining = state.pages.filter((p) => p.id !== id);
+          const remaining = state.pages.filter((p) => p.id !== id && !p.deletedAt);
           const newActiveId =
             state.activePageId === id
               ? (remaining[0]?.id ?? null)
               : state.activePageId;
-          return { pages: remaining, activePageId: newActiveId };
+          return {
+            pages: state.pages.map((p) =>
+              p.id === id ? { ...p, deletedAt: Date.now() } : p
+            ),
+            activePageId: newActiveId,
+          };
         });
+      },
+
+      restorePage: (id) => {
+        set((state) => ({
+          pages: state.pages.map((p) =>
+            p.id === id ? { ...p, deletedAt: undefined } : p
+          ),
+        }));
+      },
+
+      permanentlyDeletePage: (id) => {
+        set((state) => ({
+          pages: state.pages.filter((p) => p.id !== id),
+        }));
       },
 
       setActivePage: (id) => set({ activePageId: id }),

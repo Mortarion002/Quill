@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
+import { Icon } from "@/components/ui/Icon";
 
 const TEMPLATES = [
   {
@@ -74,7 +75,7 @@ export function EmptyState({ pageId, onActivate }: EmptyStateProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="text-[60px] font-bold leading-[1.1] tracking-[-0.04em] text-surface-container-highest mb-8"
+          className="text-[56px] font-bold leading-[1.1] tracking-normal text-slate-200 mb-8"
         >
           Untitled Document
         </motion.h1>
@@ -83,10 +84,10 @@ export function EmptyState({ pageId, onActivate }: EmptyStateProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.4 }}
-          className="flex items-center gap-2 text-outline-variant text-lg mb-6"
+          className="flex items-center gap-2 text-slate-400 text-lg mb-6"
         >
           <span>Type &apos;/&apos; for commands, or start writing…</span>
-          <span className="inline-block w-0.5 h-5.5 bg-primary rounded-full cursor-blink" />
+          <span className="inline-block w-0.5 h-5.5 bg-violet-500 rounded-full cursor-blink" />
         </motion.div>
 
         <motion.div
@@ -102,7 +103,7 @@ export function EmptyState({ pageId, onActivate }: EmptyStateProps) {
             { key: "⌘ Z", label: "Undo"     },
           ].map(({ key, label }) => (
             <span key={key} className="flex items-center gap-2 text-[12px] text-slate-600 select-none">
-              <kbd className="px-1.5 py-0.5 rounded-md bg-surface-container-high border border-white/8 text-slate-500 font-mono text-[11px] leading-none">
+              <kbd className="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-500 font-mono text-[11px] leading-none">
                 {key}
               </kbd>
               {label}
@@ -120,7 +121,7 @@ export function EmptyState({ pageId, onActivate }: EmptyStateProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.35, duration: 0.3 }}
-          className="text-[10px] uppercase tracking-widest text-outline mb-4 select-none"
+          className="text-[10px] uppercase tracking-widest text-slate-400 mb-4 select-none"
         >
           Start with a template
         </motion.p>
@@ -135,30 +136,15 @@ export function EmptyState({ pageId, onActivate }: EmptyStateProps) {
               whileHover={{ y: -3, transition: { duration: 0.15 } }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleTemplate(tpl.id)}
-              className="group text-left border border-white/5 rounded-xl p-5 flex flex-col gap-4 relative overflow-hidden hover:border-white/[0.12] transition-colors duration-300 cursor-pointer"
-              style={{
-                background: "rgba(17, 24, 39, 0.5)",
-                backdropFilter: "blur(24px)",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.4)",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow =
-                  "0 1px 2px rgba(0,0,0,0.4), 0 20px 40px -8px rgba(139,92,246,0.13)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow =
-                  "0 1px 2px rgba(0,0,0,0.4)";
-              }}
+              className="group text-left border border-slate-100 rounded-2xl bg-white p-5 flex flex-col gap-4 relative overflow-hidden hover:border-violet-100 hover:shadow-md transition-all duration-300 cursor-pointer"
             >
               <div
-                className={`w-10 h-10 rounded-lg flex items-center justify-center ${tpl.bgIdle} ${tpl.accentClass} ${tpl.bgHover} transition-all duration-200`}
+                className="w-10 h-10 rounded-xl flex items-center justify-center bg-violet-50 text-violet-600 transition-all duration-200"
               >
-                <span className="material-symbols-outlined text-[20px]">
-                  {tpl.icon}
-                </span>
+                <Icon name={tpl.id === "meeting" ? "user" : tpl.id === "brainstorm" ? "spark" : "map"} className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-[15px] font-semibold text-slate-200 mb-1 leading-snug">
+                <h4 className="text-[15px] font-semibold text-slate-950 mb-1 leading-snug">
                   {tpl.title}
                 </h4>
                 <p className="text-[13px] text-slate-500 leading-snug">

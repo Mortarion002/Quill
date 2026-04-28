@@ -3,6 +3,16 @@
 import { create } from "zustand";
 import type { Editor } from "@tiptap/core";
 
+export type WorkspaceView =
+  | "editor"
+  | "search"
+  | "pages"
+  | "favorites"
+  | "templates"
+  | "settings"
+  | "help"
+  | "trash";
+
 interface DocStats {
   words: number;
   chars: number;
@@ -10,12 +20,14 @@ interface DocStats {
 }
 
 interface UIStore {
+  workspaceView: WorkspaceView;
   inspectorOpen: boolean;
   commandMenuOpen: boolean;
   activeBlockId: string | null;
   hoveredBlockId: string | null;
   activeEditor: Editor | null;
   docStats: DocStats;
+  setWorkspaceView: (view: WorkspaceView) => void;
   toggleInspector: () => void;
   setInspectorOpen: (open: boolean) => void;
   setCommandMenuOpen: (open: boolean) => void;
@@ -26,6 +38,7 @@ interface UIStore {
 }
 
 export const useUIStore = create<UIStore>()((set) => ({
+  workspaceView: "editor",
   inspectorOpen: false,
   commandMenuOpen: false,
   activeBlockId: null,
@@ -33,6 +46,7 @@ export const useUIStore = create<UIStore>()((set) => ({
   activeEditor: null,
   docStats: { words: 0, chars: 0, blocks: 0 },
 
+  setWorkspaceView: (view) => set({ workspaceView: view }),
   toggleInspector: () =>
     set((state) => ({ inspectorOpen: !state.inspectorOpen })),
   setInspectorOpen: (open) => set({ inspectorOpen: open }),
