@@ -78,8 +78,10 @@
 }
 
 /* ─── Named shadows (avoids inline styles) ─── */
-.sidebar-glow   { box-shadow: 0 0 24px rgba(139, 92, 246, 0.08); }
-.inspector-shadow { box-shadow: -10px 0 32px rgba(0, 0, 0, 0.5); }
+.sidebar-glow        { box-shadow: 0 0 24px rgba(139, 92, 246, 0.08); }
+.inspector-shadow    { box-shadow: -10px 0 32px rgba(0, 0, 0, 0.5); }
+.new-page-btn-glow   { box-shadow: 0 2px 12px rgba(139, 92, 246, 0.25); }
+.sidebar-template-btn { background: rgba(17, 24, 39, 0.4); }
 
 /* ─── Emoji picker ─── */
 .emoji-picker-panel {

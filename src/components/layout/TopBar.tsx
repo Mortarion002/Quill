@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
 import { cn } from "@/lib/utils";
@@ -7,7 +8,11 @@ import { cn } from "@/lib/utils";
 export function TopBar() {
   const { getActivePage, hasHydrated } = useDocumentStore();
   const { inspectorOpen, toggleInspector } = useUIStore();
-  const activePage = hasHydrated ? getActivePage() : undefined;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  // Both guards needed: mounted prevents SSR/hydration mismatch,
+  // hasHydrated ensures Zustand localStorage has been read
+  const activePage = mounted && hasHydrated ? getActivePage() : undefined;
 
   return (
     <header
