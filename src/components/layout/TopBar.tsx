@@ -2,6 +2,7 @@
 
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
+import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
 const VIEW_TITLES: Record<string, string> = {
@@ -26,56 +27,50 @@ export function TopBar() {
   return (
     <header
       className={cn(
-        "fixed top-0 h-14 border-b border-white/5 z-40 bg-slate-950/60 backdrop-blur-xl flex items-center justify-between px-6 transition-all duration-300",
-        "left-65",
-        inspectorOpen ? "right-80" : "right-0"
+        "fixed top-5 z-40 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/88 px-7 backdrop-blur-2xl transition-all duration-300",
+        "left-[292px] right-5 rounded-tr-[24px]",
+        inspectorOpen && "right-[340px]"
       )}
     >
-      {/* ─── Left: Title ─── */}
-      <div className="flex items-center gap-3 min-w-0">
-        <span className="text-[15px] font-semibold text-slate-200 truncate">
-          {title}
-        </span>
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="truncate text-[15px] font-semibold text-slate-950">{title}</span>
       </div>
 
-      {/* ─── Right: Actions ─── */}
-      <div className="flex items-center gap-3 flex-shrink-0">
-        {/* Text links */}
-        <div className="flex items-center gap-4 pr-4 border-r border-white/5">
-          <button type="button" className="text-slate-400 hover:text-white transition-colors text-sm font-medium">
+      <div className="flex shrink-0 items-center gap-3">
+        <div className="flex items-center gap-4 border-r border-slate-200 pr-4">
+          <button type="button" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-950">
             Share
           </button>
-          <button type="button" className="text-slate-400 hover:text-white transition-colors text-sm font-medium">
+          <button type="button" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-950">
             Publish
           </button>
         </div>
 
-        {/* Icon buttons */}
         <div className="flex items-center gap-1">
-          <button type="button" className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all">
-            <span className="material-symbols-outlined text-[20px]">history</span>
+          <button
+            type="button"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-950"
+            title="History"
+          >
+            <Icon name="clock" className="h-4.5 w-4.5" />
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={toggleInspector}
             className={cn(
-              "w-8 h-8 flex items-center justify-center rounded-lg transition-all",
+              "flex h-8 w-8 items-center justify-center rounded-lg transition-all",
               inspectorOpen
-                ? "text-violet-400 bg-violet-500/10"
-                : "text-slate-400 hover:text-white hover:bg-white/5"
+                ? "bg-violet-50 text-violet-600"
+                : "text-slate-400 hover:bg-slate-100 hover:text-slate-950"
             )}
             title="Toggle Inspector"
           >
-            <span className="material-symbols-outlined text-[20px]">
-              more_horiz
-            </span>
+            <Icon name="more" className="h-4.5 w-4.5" />
           </button>
         </div>
 
-        {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-surface-container-high border border-white/10 flex items-center justify-center overflow-hidden ml-1 cursor-pointer hover:border-white/20 transition-colors">
-          <span className="material-symbols-outlined text-[16px] text-slate-400">
-            person
-          </span>
+        <div className="ml-1 flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 transition-colors hover:border-slate-300">
+          <Icon name="user" className="h-4 w-4 text-slate-500" />
         </div>
       </div>
     </header>

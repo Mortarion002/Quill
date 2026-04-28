@@ -2,29 +2,30 @@
 
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore, type WorkspaceView } from "@/store/useUIStore";
+import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS: {
-  icon: string;
+  icon: Parameters<typeof Icon>[0]["name"];
   label: string;
   view: WorkspaceView;
   count?: "pages" | "trash";
 }[] = [
   { icon: "search", label: "Search", view: "search" },
-  { icon: "description", label: "Pages", view: "pages", count: "pages" },
+  { icon: "note", label: "Pages", view: "pages", count: "pages" },
   { icon: "star", label: "Favorites", view: "favorites" },
-  { icon: "dashboard_customize", label: "Templates", view: "templates" },
+  { icon: "grid", label: "Templates", view: "templates" },
   { icon: "settings", label: "Settings", view: "settings" },
 ];
 
 const FOOTER_ITEMS: {
-  icon: string;
+  icon: Parameters<typeof Icon>[0]["name"];
   label: string;
   view: WorkspaceView;
   count?: "trash";
 }[] = [
   { icon: "help", label: "Help", view: "help" },
-  { icon: "delete", label: "Trash", view: "trash", count: "trash" },
+  { icon: "trash", label: "Trash", view: "trash", count: "trash" },
 ];
 
 function NavButton({
@@ -33,7 +34,7 @@ function NavButton({
   view,
   count,
 }: {
-  icon: string;
+  icon: Parameters<typeof Icon>[0]["name"];
   label: string;
   view: WorkspaceView;
   count?: number;
@@ -46,22 +47,19 @@ function NavButton({
       type="button"
       onClick={() => setWorkspaceView(view)}
       className={cn(
-        "w-full flex items-center gap-3 px-3 py-2.25 rounded-lg text-sm transition-all duration-150",
+        "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-150",
         isActive
-          ? "bg-white/10 text-white border-l-2 border-violet-500"
-          : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+          ? "bg-white text-slate-950 shadow-sm ring-1 ring-slate-200/80"
+          : "text-slate-500 hover:bg-white/65 hover:text-slate-900"
       )}
     >
-      <span
-        className={cn(
-          "material-symbols-outlined text-[20px] shrink-0",
-          isActive && "text-violet-400 filled"
-        )}
-      >
-        {icon}
-      </span>
+      <Icon name={icon} className={cn("h-4.5 w-4.5", isActive ? "text-slate-800" : "text-slate-400")} />
       <span className="flex-1 text-left font-medium">{label}</span>
-      {!!count && <span className="text-[11px] text-slate-600 tabular-nums">{count}</span>}
+      {!!count && (
+        <span className="rounded-md bg-violet-100 px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-violet-600">
+          {count}
+        </span>
+      )}
     </button>
   );
 }
@@ -84,50 +82,66 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 z-50 flex h-screen w-65 flex-col border-r border-white/5 bg-slate-950/60 backdrop-blur-xl sidebar-glow">
-      <div className="px-4 pt-4 pb-2">
+    <aside className="fixed bottom-5 left-5 top-5 z-50 flex w-68 flex-col rounded-l-[24px] border border-white/70 bg-[#f5f6fb]/85 shadow-[0_24px_70px_rgba(79,70,120,0.16)] backdrop-blur-2xl">
+      <div className="px-5 pt-5 pb-3">
         <button
           type="button"
           onClick={() => setWorkspaceView("editor")}
-          className="group flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-white/5"
+          className="group flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/70"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-surface-container-high">
-            <span className="material-symbols-outlined filled text-[22px] text-violet-400">pentagon</span>
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 shadow-sm">
+            <Icon name="spark" className="h-5 w-5 text-violet-200" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate text-[15px] font-bold leading-snug text-slate-100">
+            <span className="truncate text-[15px] font-bold leading-snug text-slate-950">
               Intellect Workspace
             </span>
-            <span className="truncate text-[11px] text-slate-500">Local writing space</span>
+            <span className="truncate text-[12px] text-slate-500">Local writing space</span>
           </div>
         </button>
       </div>
 
-      <div className="px-4 pb-3">
+      <div className="px-5 pb-4">
         <button
           type="button"
           onClick={handleNewPage}
-          className="new-page-btn-glow flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-violet-500 active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(124,58,237,0.22)] transition-all duration-200 hover:bg-violet-500 active:scale-[0.98]"
         >
-          <span className="material-symbols-outlined text-[18px]">add</span>
+          <Icon name="plus" className="h-4.5 w-4.5" />
           New Page
         </button>
       </div>
 
-      <nav className="flex flex-col gap-0.5 px-4 pb-2">
+      <nav className="flex flex-col gap-1 px-5 pb-3">
         {NAV_ITEMS.map((item) => (
           <NavButton key={item.view} {...item} count={resolveCount(item.count)} />
         ))}
       </nav>
 
-      <div className="mx-4 border-t border-white/5" />
+      <div className="mx-5 border-t border-slate-200/75" />
       <div className="flex-1 min-h-0" />
 
-      <nav className="flex flex-col gap-0.5 border-t border-white/5 px-4 pt-3 pb-4">
-        {FOOTER_ITEMS.map((item) => (
-          <NavButton key={item.view} {...item} count={resolveCount(item.count)} />
-        ))}
-      </nav>
+      <div className="mx-5 mb-4 rounded-2xl border border-slate-200/80 bg-white/78 p-3 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+        <nav className="flex flex-col gap-1">
+          {FOOTER_ITEMS.map((item) => (
+            <NavButton key={item.view} {...item} count={resolveCount(item.count)} />
+          ))}
+        </nav>
+        <div className="mt-3 grid grid-cols-3 rounded-xl bg-slate-100 p-1 text-[12px] font-medium text-slate-400">
+          <span className="rounded-lg px-2 py-1.5 text-center">Dark</span>
+          <span className="rounded-lg bg-white px-2 py-1.5 text-center text-slate-950 shadow-sm">Light</span>
+          <span className="rounded-lg px-2 py-1.5 text-center">System</span>
+        </div>
+        <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100 text-violet-600">
+            <Icon name="user" className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-[12px] font-semibold text-slate-900">Workspace User</p>
+            <p className="truncate text-[11px] text-slate-400">local@quill.app</p>
+          </div>
+        </div>
+      </div>
     </aside>
   );
 }

@@ -35,12 +35,12 @@ function EditorSkeleton() {
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-180 px-8 pt-24 pb-32">
-        <div className="h-16 w-3/5 bg-surface-container-high rounded-xl animate-pulse mb-10" />
+        <div className="h-16 w-3/5 bg-slate-100 rounded-xl animate-pulse mb-10" />
         <div className="space-y-3">
           {[78, 92, 65, 85, 55].map((w, i) => (
             <div
               key={i}
-              className="h-4.5 bg-surface-container rounded-lg animate-pulse"
+              className="h-4.5 bg-slate-100 rounded-lg animate-pulse"
               style={{ width: `${w}%`, animationDelay: `${i * 70}ms` }}
             />
           ))}
@@ -103,7 +103,7 @@ export default function EditorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-void">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_8%_8%,rgba(139,92,246,0.12),transparent_28%),radial-gradient(circle_at_92%_92%,rgba(251,207,232,0.45),transparent_32%),#ececf4]">
       <SettingsApplier />
       <Sidebar />
       <TopBar />
@@ -111,8 +111,8 @@ export default function EditorPage() {
 
       <main
         className={cn(
-          "transition-all duration-300 ease-in-out ml-65 pt-14 min-h-screen",
-          inspectorOpen && "mr-80"
+          "ml-[292px] mr-5 mt-5 min-h-[calc(100vh-40px)] rounded-r-[24px] border border-l-0 border-white/80 bg-white/92 pt-16 shadow-[0_24px_70px_rgba(79,70,120,0.14)] transition-all duration-300 ease-in-out",
+          inspectorOpen && "mr-[340px]"
         )}
       >
         <AnimatePresence mode="wait">

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
+import { Icon } from "@/components/ui/Icon";
 import { EmojiPicker } from "./EmojiPicker";
 
 interface DocumentTitleProps {
@@ -51,9 +52,9 @@ export function DocumentTitle({ pageId, title, emoji }: DocumentTitleProps) {
             type="button"
             title="Add emoji"
             onClick={() => setEmojiOpen((v) => !v)}
-            className="flex items-center gap-1.5 text-[12px] text-slate-600 hover:text-slate-400 transition-all duration-150 mb-1 opacity-0 group-hover/title:opacity-100"
+            className="flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-slate-700 transition-all duration-150 mb-1 opacity-0 group-hover/title:opacity-100"
           >
-            <span className="material-symbols-outlined text-[15px]">add_reaction</span>
+            <Icon name="plus" className="h-3.5 w-3.5" />
             Add emoji
           </button>
         )}
@@ -74,7 +75,7 @@ export function DocumentTitle({ pageId, title, emoji }: DocumentTitleProps) {
         contentEditable
         suppressContentEditableWarning
         data-placeholder="Untitled Document"
-        className="text-[60px] font-bold leading-[1.1] tracking-[-0.04em] text-on-surface outline-none w-full wrap-break-word cursor-text caret-primary"
+        className="text-[56px] font-bold leading-[1.1] tracking-normal text-slate-950 outline-none w-full wrap-break-word cursor-text caret-violet-500"
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
       >
