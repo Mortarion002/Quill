@@ -5,6 +5,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import type { Editor as TipTapEditor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
+import TextAlign from "@tiptap/extension-text-align";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDocumentStore } from "@/store/useDocumentStore";
 import { useUIStore } from "@/store/useUIStore";
@@ -85,7 +86,7 @@ function moveBlock(editor: TipTapEditor, fromIndex: number, toIndex: number) {
 
 export function Editor({ pageId, initialContent }: EditorProps) {
   const { updatePage } = useDocumentStore();
-  const { setActiveBlock } = useUIStore();
+  const { setActiveBlock, setActiveEditor, setDocStats } = useUIStore();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [hoveredBlock, setHoveredBlock] = useState<HoveredBlockInfo | null>(null);
   const prevBlockEl = useRef<HTMLElement | null>(null);
@@ -132,6 +133,7 @@ export function Editor({ pageId, initialContent }: EditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
       Placeholder.configure({
         placeholder: ({ node }) => {
           if (node.type.name === "heading") return "Heading…";
@@ -152,6 +154,13 @@ export function Editor({ pageId, initialContent }: EditorProps) {
       const html = editor.getHTML();
       const isEmpty = html === "<p></p>" || html === "" || editor.isEmpty;
       updatePage(pageId, { content: isEmpty ? "" : html });
+
+      /* Doc stats */
+      const text = editor.state.doc.textContent;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      let blocks = 0;
+      editor.state.doc.forEach(() => blocks++);
+      setDocStats({ words, chars: text.length, blocks });
 
       /* Slash detection */
       const ctx = getSlashContext(editor);
@@ -274,6 +283,13 @@ export function Editor({ pageId, initialContent }: EditorProps) {
     },
     [executeCommand]
   );
+
+  /* ─── Register editor with UIStore so Inspector can access it ─── */
+  useEffect(() => {
+    if (editor) setActiveEditor(editor);
+    return () => setActiveEditor(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor]);
 
   /* ─── Sync content when switching pages ─── */
   useEffect(() => {
