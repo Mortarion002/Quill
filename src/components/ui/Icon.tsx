@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-type IconName =
+export type IconName =
   | "archive"
   | "book"
   | "calendar"
@@ -23,6 +23,7 @@ type IconName =
   | "spark"
   | "star"
   | "trash"
+  | "type"
   | "user";
 
 const paths: Record<IconName, React.ReactNode> = {
@@ -46,6 +47,7 @@ const paths: Record<IconName, React.ReactNode> = {
   spark: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Zm6 12 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3Z" />,
   star: <path d="m12 3 2.7 5.47 6.04.88-4.37 4.26 1.03 6.02L12 16.79l-5.4 2.84 1.03-6.02-4.37-4.26 6.04-.88L12 3Z" />,
   trash: <path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3" />,
+  type: <path d="M4 7V4h16v3M9 20h6M12 4v16" />,
   user: <path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />,
 };
 

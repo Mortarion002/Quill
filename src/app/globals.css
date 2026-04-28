@@ -237,7 +237,7 @@ input[type="range"] {
   appearance: none;
   height: 4px;
   border-radius: 2px;
-  background: #353439;
+  background: #e2e8f0;
   outline: none;
   cursor: pointer;
 }
@@ -246,9 +246,9 @@ input[type="range"]::-webkit-slider-thumb {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #a078ff;
+  background: #8b5cf6;
   cursor: pointer;
-  box-shadow: 0 0 6px rgba(160, 120, 255, 0.5);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
 }
 
 /* ─── Contenteditable ─── */

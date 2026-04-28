@@ -65,6 +65,26 @@ function NavButton({
   );
 }
 
+function QuillMark() {
+  return (
+    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-violet-100 shadow-[0_14px_30px_rgba(15,23,42,0.18)]">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 48 48"
+        className="h-8 w-8"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M18 30c8-2 14-8 16-18-10 2-16 8-18 16l-4 8 6-6Z" strokeWidth="3" />
+        <path d="M18 30 30 18" strokeWidth="2.5" />
+        <path d="M31 31l1.2 3.3L35.5 36l-3.3 1.2L31 40.5l-1.2-3.3L26.5 36l3.3-1.7L31 31Z" strokeWidth="2" />
+      </svg>
+    </div>
+  );
+}
+
 export function Sidebar() {
   const { pages, createPage } = useDocumentStore();
   const { setWorkspaceView } = useUIStore();
@@ -90,14 +110,14 @@ export function Sidebar() {
           onClick={() => setWorkspaceView("editor")}
           className="group flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/70"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 shadow-sm">
-            <Icon name="spark" className="h-5 w-5 text-violet-200" />
-          </div>
+          <QuillMark />
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate text-[15px] font-bold leading-snug text-slate-950">
-              quill
+            <span className="truncate text-[21px] font-extrabold leading-tight tracking-normal text-slate-950">
+              Quill
             </span>
-            <span className="truncate text-[12px] text-slate-500">quiet writing space</span>
+            <span className="truncate text-[13px] font-medium leading-snug text-slate-500">
+              Quiet writing space
+            </span>
           </div>
         </button>
       </div>
