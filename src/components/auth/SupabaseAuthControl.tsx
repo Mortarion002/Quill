@@ -13,7 +13,7 @@ function getInitials(email?: string) {
   return email.slice(0, 1).toUpperCase();
 }
 
-function AuthDialog({
+export function AuthDialog({
   mode,
   onModeChange,
   onClose,
@@ -67,7 +67,7 @@ function AuthDialog({
 
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/18 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-[28px] border border-white/80 bg-[#f8f8fc]/95 p-5 shadow-[0_28px_80px_rgba(79,70,120,0.24)]">
+      <div className="w-full max-w-96 rounded-[28px] border border-white/80 bg-[#f8f8fc]/95 p-5 shadow-[0_28px_80px_rgba(79,70,120,0.24)]">
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-500">
