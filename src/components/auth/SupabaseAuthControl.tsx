@@ -218,7 +218,7 @@ export function SupabaseAuthControl({ surface }: { surface: Surface }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-[12px] font-semibold text-slate-900">{email}</p>
-          <p className="truncate text-[11px] text-slate-400">Cloud ready</p>
+          <p className="truncate text-[11px] text-slate-400">Syncing with Supabase</p>
         </div>
         <button
           type="button"

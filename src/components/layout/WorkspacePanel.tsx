@@ -227,6 +227,7 @@ function TemplatesView() {
 
 function SettingsView() {
   const { font, lineSpacing, spellCheck, setFont, setLineSpacing, setSpellCheck } = useSettingsStore();
+  const { cloudStatus, cloudMessage, lastSyncedAt } = useDocumentStore();
   const fonts: { value: FontOption; label: string; preview: string }[] = [
     { value: "inter", label: "Inter", preview: "Quiet sans" },
     { value: "serif", label: "Georgia", preview: "Long-form serif" },
@@ -234,6 +235,24 @@ function SettingsView() {
   ];
   const previewFontClass = `font-preview-${font}`;
   const formattedLineSpacing = lineSpacing.toFixed(2).replace(/\.00$/, "");
+  const cloudLabel =
+    cloudStatus === "synced"
+      ? "Cloud saved"
+      : cloudStatus === "syncing"
+        ? "Syncing"
+        : cloudStatus === "loading"
+          ? "Loading cloud"
+          : cloudStatus === "error"
+            ? "Needs attention"
+            : cloudStatus === "setup"
+              ? "Setup needed"
+              : "Local mode";
+  const cloudDescription =
+    cloudStatus === "synced"
+      ? lastSyncedAt
+        ? `Last synced ${new Date(lastSyncedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+        : "Cloud sync is ready."
+      : cloudMessage ?? "Sign in to sync this workspace across devices.";
 
   return (
     <div className="grid grid-cols-[1fr_340px] gap-6">
@@ -266,6 +285,25 @@ function SettingsView() {
       </section>
 
       <aside className="space-y-4">
+        <section className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Cloud</p>
+              <p className="mt-3 text-[15px] font-bold text-slate-950">{cloudLabel}</p>
+              <p className="mt-1 text-[12px] leading-5 text-slate-400">{cloudDescription}</p>
+            </div>
+            <span
+              className={cn(
+                "mt-1 h-2.5 w-2.5 rounded-full",
+                cloudStatus === "synced" && "bg-emerald-400",
+                cloudStatus === "syncing" && "bg-violet-500",
+                cloudStatus === "loading" && "bg-slate-300",
+                cloudStatus === "error" && "bg-red-400",
+                (cloudStatus === "local" || cloudStatus === "setup") && "bg-slate-300"
+              )}
+            />
+          </div>
+        </section>
         <section className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Preview</p>
           <div className={cn("rounded-2xl bg-slate-50 p-4 text-slate-950", previewFontClass)}>
