@@ -121,7 +121,7 @@ export default function EditorPage() {
           inspectorOpen && "mr-[340px]"
         )}
       >
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {workspaceView !== "editor" ? (
             <WorkspacePanel key={workspaceView} />
           ) : !hasHydrated || !activePage ? (

@@ -303,8 +303,13 @@ export function Editor({ pageId, initialContent }: EditorProps) {
   }, [editor, spellCheck]);
 
   /* ─── Sync content when switching pages ─── */
+  const isFirstRender = useRef(true);
   useEffect(() => {
     if (!editor || editor.isDestroyed) return;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     const currentHTML = editor.getHTML();
     if (currentHTML !== initialContent) {
       editor.commands.setContent(initialContent || "");
