@@ -121,9 +121,9 @@ export default function EditorPage() {
           inspectorOpen && "mr-[340px]"
         )}
       >
-        <AnimatePresence>
+        <AnimatePresence initial={false} mode="wait">
           {workspaceView !== "editor" ? (
-            <WorkspacePanel key={workspaceView} />
+            <WorkspacePanel key={workspaceView} view={workspaceView} />
           ) : !hasHydrated || !activePage ? (
             <motion.div
               key="skeleton"
