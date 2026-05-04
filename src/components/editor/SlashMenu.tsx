@@ -68,7 +68,7 @@ export function SlashMenu({ open, commands, position, activeIndex, onSelect }: S
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 4, scale: 0.97 }}
           transition={{ duration: 0.14, ease: "easeOut" }}
-          className="fixed z-[200] w-72 rounded-2xl border border-white/8 slash-menu-panel overflow-hidden"
+          className="fixed z-[200] w-72 overflow-hidden rounded-2xl border border-slate-200/80 slash-menu-panel"
           style={{ left: clampedX, top: clampedY }}
         >
           {commands.length === 0 ? (
@@ -79,7 +79,7 @@ export function SlashMenu({ open, commands, position, activeIndex, onSelect }: S
             <div className="max-h-72 overflow-y-auto py-1.5">
               {Object.entries(grouped).map(([cat, cmds]) => (
                 <div key={cat}>
-                  <p className="px-4 pt-2.5 pb-1 text-[9px] uppercase tracking-widest text-slate-700 font-semibold select-none">
+                  <p className="px-4 pt-2.5 pb-1 text-[9px] uppercase tracking-widest text-slate-400 font-semibold select-none">
                     {cat}
                   </p>
                   <div className="px-1.5 flex flex-col gap-0.5">
@@ -98,21 +98,27 @@ export function SlashMenu({ open, commands, position, activeIndex, onSelect }: S
                           className={cn(
                             "w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-colors duration-75 text-left",
                             isActive
-                              ? "bg-violet-500/15 text-on-surface"
-                              : "text-slate-300 hover:bg-white/5"
+                              ? "bg-violet-50 text-slate-950"
+                              : "text-slate-700 hover:bg-slate-50"
                           )}
                         >
                           <div
                             className={cn(
                               "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors",
-                              isActive ? "bg-violet-500/20" : "bg-surface-container-high"
+                              isActive ? "bg-violet-100" : "bg-slate-100"
                             )}
                           >
-                            <Icon name={cmd.icon} className="h-4 w-4 text-slate-400" />
+                            <Icon
+                              name={cmd.icon}
+                              className={cn(
+                                "h-4 w-4",
+                                isActive ? "text-violet-600" : "text-slate-500"
+                              )}
+                            />
                           </div>
                           <div className="min-w-0">
-                            <p className="text-[13px] font-medium leading-tight">{cmd.label}</p>
-                            <p className="text-[11px] text-slate-600 leading-tight mt-0.5">
+                            <p className="text-[13px] font-semibold leading-tight">{cmd.label}</p>
+                            <p className="text-[11px] text-slate-500 leading-tight mt-0.5">
                               {cmd.desc}
                             </p>
                           </div>
