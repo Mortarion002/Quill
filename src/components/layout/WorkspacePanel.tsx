@@ -427,10 +427,12 @@ function TrashView() {
   );
 }
 
-export function WorkspacePanel() {
-  const { workspaceView } = useUIStore();
-
-  if (workspaceView === "editor") return null;
+export function WorkspacePanel({
+  view,
+}: {
+  view: Exclude<WorkspaceView, "editor">;
+}) {
+  const workspaceView = view;
 
   return (
     <SurfaceShell view={workspaceView}>
