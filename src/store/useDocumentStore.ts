@@ -60,7 +60,7 @@ export const useDocumentStore = create<DocumentStore>()(
           const livePages = pages.filter((page) => !page.deletedAt);
           const activePageId =
             nextActivePageId === undefined
-              ? state.activePageId && pages.some((page) => page.id === state.activePageId)
+              ? state.activePageId && livePages.some((page) => page.id === state.activePageId)
                 ? state.activePageId
                 : livePages[0]?.id ?? null
               : nextActivePageId;
@@ -104,9 +104,10 @@ export const useDocumentStore = create<DocumentStore>()(
             state.activePageId === id
               ? (remaining[0]?.id ?? null)
               : state.activePageId;
+          const now = Date.now();
           return {
             pages: state.pages.map((p) =>
-              p.id === id ? { ...p, deletedAt: Date.now() } : p
+              p.id === id ? { ...p, deletedAt: now, updatedAt: now } : p
             ),
             activePageId: newActiveId,
           };
@@ -116,7 +117,7 @@ export const useDocumentStore = create<DocumentStore>()(
       restorePage: (id) => {
         set((state) => ({
           pages: state.pages.map((p) =>
-            p.id === id ? { ...p, deletedAt: undefined } : p
+            p.id === id ? { ...p, deletedAt: undefined, updatedAt: Date.now() } : p
           ),
         }));
       },
