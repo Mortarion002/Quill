@@ -21,6 +21,7 @@ export function DocumentTitle({ pageId, title, emoji }: DocumentTitleProps) {
 
   const handleBlur = () => {
     const newTitle = titleRef.current?.textContent?.trim() || "Untitled";
+    if (newTitle === title) return;
     updatePage(pageId, { title: newTitle });
   };
 

@@ -4,6 +4,11 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Page } from "@/types";
 import { generateId } from "@/lib/utils";
+import {
+  markPageDeleted,
+  markPageRestored,
+  resolveActivePageId,
+} from "./documentStoreLogic";
 
 export type CloudSyncStatus =
   | "local"
@@ -57,15 +62,14 @@ export const useDocumentStore = create<DocumentStore>()(
 
       replacePages: (pages, nextActivePageId) =>
         set((state) => {
-          const livePages = pages.filter((page) => !page.deletedAt);
-          const activePageId =
-            nextActivePageId === undefined
-              ? state.activePageId && pages.some((page) => page.id === state.activePageId)
-                ? state.activePageId
-                : livePages[0]?.id ?? null
-              : nextActivePageId;
-
-          return { pages, activePageId };
+          return {
+            pages,
+            activePageId: resolveActivePageId(
+              pages,
+              state.activePageId,
+              nextActivePageId
+            ),
+          };
         }),
 
       clearPendingCloudDeleteIds: (ids) =>
@@ -104,9 +108,10 @@ export const useDocumentStore = create<DocumentStore>()(
             state.activePageId === id
               ? (remaining[0]?.id ?? null)
               : state.activePageId;
+          const now = Date.now();
           return {
             pages: state.pages.map((p) =>
-              p.id === id ? { ...p, deletedAt: Date.now() } : p
+              p.id === id ? markPageDeleted(p, now) : p
             ),
             activePageId: newActiveId,
           };
@@ -114,9 +119,10 @@ export const useDocumentStore = create<DocumentStore>()(
       },
 
       restorePage: (id) => {
+        const now = Date.now();
         set((state) => ({
           pages: state.pages.map((p) =>
-            p.id === id ? { ...p, deletedAt: undefined } : p
+            p.id === id ? markPageRestored(p, now) : p
           ),
         }));
       },
